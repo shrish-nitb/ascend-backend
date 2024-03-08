@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const plansSchema = new mongoose.Schema({
+const planSchema = new mongoose.Schema({
   plan: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Question', 
