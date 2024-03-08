@@ -3,10 +3,16 @@ const router = express.Router();
 const { getAuth, firebaseApp } = require("../helper/firebase");
 const { getUser } = require("../helper/database");
 
-router.get("/user", async (req, res) => {
+router.use("/user", async (req, res, next) => {
   const accessToken = req.cookies.accessToken;
+  decodedToken = await verifyToken(accessToken);
+  req.decodedToken = decodedToken;
+  next();
+});
+
+router.get("/user", async (req, res) => {
   try {
-    user = await isSignedIn(accessToken);
+    const user = await getUser(req.decodedToken.uid);
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -15,9 +21,8 @@ router.get("/user", async (req, res) => {
 });
 
 router.post("/user", async (req, res) => {
-  const accessToken = req.cookies.accessToken;
   try {
-    user = await signup(accessToken);
+    user = await signup(req.decodedToken.uid);
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -25,10 +30,9 @@ router.post("/user", async (req, res) => {
   }
 });
 
-async function signup(accessToken) {
+async function signup(uid) {
   try {
-    const decodedToken = await verifyToken(accessToken);
-    const user = getUser(decodedToken.uid);
+    const user = getUser(uid);
     if (!user) {
       const newUser = await User.create({
         uid: decodedToken.uid,
