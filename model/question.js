@@ -68,6 +68,10 @@ const questionSchema = new mongoose.Schema({
       required: true,
     },
   },
+  isPaid:{
+    type: Boolean,
+    default: false,
+  }
 });
 
 // questionSchema.virtual("answer", {

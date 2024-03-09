@@ -40,6 +40,9 @@ async function signup(decodedToken) {
         name: decodedToken.name,
         email: decodedToken.email,
       });
+      return newUser;
+    } else {
+      return user[0];
     }
   } catch (error) {
     throw error;
