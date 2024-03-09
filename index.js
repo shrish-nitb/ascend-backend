@@ -8,7 +8,11 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials:true,
+  optionSuccessStatus:200,
+}));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -18,6 +22,8 @@ const userRouter = require("./router/user");
 const ordersRouter = require("./router/order");
 const plansRouter = require("./router/plan");
 const questionsRouter = require("./router/question");
+
+
 
 app.use("/user", userRouter);
 app.use("/orders", ordersRouter);
