@@ -11,15 +11,15 @@ const Plan = require("../model/plan");
 const Order = require("../model/order");
 const User = require("../model/user");
 
-router.use("/", async (req, res, next) => {
+const verificationMiddleware = async (req, res, next) => {
   //add try catch
   const accessToken = req.cookies.accessToken;
   decodedToken = await verifyToken(accessToken);
   req.decodedToken = decodedToken;
   next();
-});
+};
 
-router.get("/:plan", async (req, res) => {
+router.get("/:plan", verificationMiddleware, async (req, res) => {
   const planId = req.params.plan;
   const userId = req.decodedToken.uid;
   const planObj = await Plan.find({ _id: planId }).exec();
