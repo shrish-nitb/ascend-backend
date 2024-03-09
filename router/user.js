@@ -6,6 +6,7 @@ const User = require("../model/user");
 
 router.use("/", async (req, res, next) => {
   const {accessToken} = req.body;
+  console.log("this is token ", accessToken)
   decodedToken = await verifyToken(accessToken);
   req.decodedToken = decodedToken;
   next();
