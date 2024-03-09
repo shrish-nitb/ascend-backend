@@ -20,7 +20,11 @@ const planSchema = new mongoose.Schema({
     required: true,
   },
   price: {
-    type: Number,
+    type: Number, //paise
+    default: 0,
+  },
+  validity: {
+    type: Number, //days
     default: 0,
   },
   test: [

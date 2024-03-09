@@ -6,11 +6,19 @@ const planSchema = new mongoose.Schema({
     ref: 'Question', 
     required: true,
   },
-  receipt:{
+  order:{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Receipt', 
+    ref: 'Order', 
     required: true,
-  }
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  expiryDate: {
+    type: Date,
+    required: true,
+  },
 })
 
 const userSchema = new mongoose.Schema({
@@ -49,4 +57,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = {User};
+module.exports = User;
