@@ -6,7 +6,6 @@ const User = require("../model/user");
 
 router.use("/", async (req, res, next) => {
   let token = req.header("Authorization");
-  console.log(token)
   if (token && token.startsWith("Bearer ")) {
     token = token.slice(7);
   } else if (req.cookies && req.cookies.token) {
