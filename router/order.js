@@ -13,7 +13,7 @@ const User = require("../model/user");
 
 const verificationMiddleware = async (req, res, next) => {
   //add try catch
-  const accessToken = req.cookies.accessToken;
+  const {accessToken} = req.body;
   decodedToken = await verifyToken(accessToken);
   req.decodedToken = decodedToken;
   next();

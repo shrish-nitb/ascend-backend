@@ -5,7 +5,7 @@ const { getUser } = require("../utils/database");
 const User = require("../model/user");
 
 router.use("/", async (req, res, next) => {
-  const accessToken = req.cookies.accessToken;
+  const {accessToken} = req.body;
   decodedToken = await verifyToken(accessToken);
   req.decodedToken = decodedToken;
   next();
