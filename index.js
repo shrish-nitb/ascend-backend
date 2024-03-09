@@ -8,6 +8,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const app = express();
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -16,10 +17,12 @@ const PORT = process.env.PORT;
 const userRouter = require("./router/user");
 const ordersRouter = require("./router/order");
 const plansRouter = require("./router/plan");
+const questionsRouter = require("./router/question");
 
 app.use("/user", userRouter);
 app.use("/orders", ordersRouter);
 app.use("/plans", plansRouter);
+app.use("/questions", questionsRouter);
 
 connectDB()
   .then(() => {
