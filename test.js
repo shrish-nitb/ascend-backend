@@ -1,0 +1,20 @@
+const axios = require('axios');
+let data = '';
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://project-ascend-backend.vercel.app/user',
+  headers: { 
+    'Cookie': 'accessToken=eyJhbGciOiJSUzI1NiIsImtpZCI6IjNiYjg3ZGNhM2JjYjY5ZDcyYjZjYmExYjU5YjMzY2M1MjI5N2NhOGQiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUHJhdGhtZXNoIENoYXVyYXNpYSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NKWVlqWmJoY3M4cXVibU9CaFdYbmoweXdvUHU3YWhsMEhmZklMTHY5bUE9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJqYXNjLTRjY2RlIiwiYXVkIjoicHJqYXNjLTRjY2RlIiwiYXV0aF90aW1lIjoxNzA5OTkwNTg5LCJ1c2VyX2lkIjoia0FZdHQ0VEpZM2ZXVXBXeUREUEttQ2QwcFVYMiIsInN1YiI6ImtBWXR0NFRKWTNmV1VwV3lERFBLbUNkMHBVWDIiLCJpYXQiOjE3MDk5OTA1ODksImV4cCI6MTcwOTk5NDE4OSwiZW1haWwiOiJwcmF0aG1lc2hAem9yd2F5LmluIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDQ0OTIyMTUwNzU4NTcxOTgwNDEiXSwiZW1haWwiOlsicHJhdGhtZXNoQHpvcndheS5pbiJdfSwic2lnbl9pbl9wcm92aWRlciI6Imdvb2dsZS5jb20ifX0.ZjNt_FgmNP4iebK25PW1MVlzklC7Joo7Fpip2qtC_3B_rbRTe_C2aimVsjyWe0n7WxOhI_8ic3UIqi7QVx2j_WIMa2UOj8Sx5z8QfuTKOH4cL-g7FLGCXLAzEuCip7t8qQA4-bEu7TM_aIpJ4vWm-Sl0fYAQVe7kI1y-Kw-NyjGLpfdEM_I0rx0nisHP11zVkVb18I8w9OTUf3GAww0k04Jv-lj-4kVfo2O9lJp5Rta7R-gJLgXlq_9stGzVBtuBi-weogNMRg2O1H80ZKHCvQn5wHVPLf7Y5h2KqTQKW4qntCtQ-f_8Z53lQU_hTysJNRgnUJDnLmpXI7fWObKu5w'
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  console.log(JSON.stringify(response.data));
+})
+.catch((error) => {
+  console.log(error);
+});
