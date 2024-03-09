@@ -8,7 +8,7 @@
 //      hackbooks, array of object id, default []
 //      media, array of string, default []
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const planSchema = new mongoose.Schema({
   name: {
@@ -27,26 +27,22 @@ const planSchema = new mongoose.Schema({
     type: Number, //days
     required: true,
   },
-  test: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Test',
-      default: [],
-    },
-  ],
-  questions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question',
-      default: [],
-    },
-  ],
+  test: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Test",
+    default: [],
+  },
+  questions: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Question",
+    default: [],
+  },
   media: {
     type: [String],
     default: [],
   },
 });
 
-const Plan = mongoose.model('Plan', planSchema);
+const Plan = mongoose.model("Plan", planSchema);
 
 module.exports = Plan;

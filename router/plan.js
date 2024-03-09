@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Plan = require('../model/plan'); 
 
-
 //GET retrieve all plans
 router.get('/', async (req, res) => {
   try {
