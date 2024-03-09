@@ -6,7 +6,6 @@ const User = require("../model/user");
 
 router.use("/", async (req, res, next) => {
   let token = req.header("Authorization");
-  console.log(req.cookies, token)
   if (token && token.startsWith("Bearer ")) {
     token = token.slice(7);
   } else if (req.cookies && req.cookies.token) {
@@ -22,7 +21,7 @@ router.use("/", async (req, res, next) => {
 router.get("/", async (req, res) => {
   try {
     const user = await getUser(req.decodedToken.uid);
-    res.status(200).json(user);
+    res.status(200).json(user[0]);
   } catch (error) {
     console.error(error);
     res.status(400).json(error);
