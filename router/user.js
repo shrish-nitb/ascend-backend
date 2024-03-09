@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { verifyToken } = require("../helper/firebase");
 const { getUser } = require("../helper/database");
-const { User } = require("../model/user");
-
+const User = require("../model/user");
 
 router.use("/", async (req, res, next) => {
   const accessToken = req.cookies.accessToken;

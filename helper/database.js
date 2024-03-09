@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const uri = process.env.DB_URL;
-const { User } = require("../model/user");
+const User = require("../model/user");
 
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },

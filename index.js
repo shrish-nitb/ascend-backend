@@ -15,9 +15,11 @@ const PORT = process.env.PORT;
 
 const userRouter = require("./router/user");
 const ordersRouter = require("./router/order");
+const plansRouter = require("./router/plan");
 
 app.use("/user", userRouter);
 app.use("/orders", ordersRouter);
+app.use("/plans", plansRouter);
 
 connectDB()
   .then(() => {

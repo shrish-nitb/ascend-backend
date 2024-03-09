@@ -37,7 +37,7 @@ router.get("/:plan", verificationMiddleware, async (req, res) => {
       merchantTransactionId: orderObj._id,
       merchantUserId: userId,
       amount: planObj[0].price,
-      redirectUrl: "https://webhook.site/2e2000b6-e704-4d7c-9d9e-844720ed0bfd",
+      redirectUrl: "https://ascend-ivory.vercel.app/mocks",
       redirectMode: "REDIRECT",
       callbackUrl: "https://project-ascend-backend.vercel.app/orders/callback",
       paymentInstrument: {
@@ -75,7 +75,8 @@ router.get("/:plan", verificationMiddleware, async (req, res) => {
       res.status(200).json(response.data);
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error' });
     });
 });
 
@@ -134,8 +135,11 @@ router.post("/callback", async (req, res) => {
       { status: "Cancelled", paymentCallbackData: transaction }
     );
   }
+
+  res.status(200);
+  return;
 });
 
-router.post("/redirect", async (req, res) => {});
+// router.get("/verify", async (req, res) => {});
 
 module.exports = router;

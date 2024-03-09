@@ -21,11 +21,11 @@ const planSchema = new mongoose.Schema({
   },
   price: {
     type: Number, //paise
-    default: 0,
+    required: true,
   },
   validity: {
     type: Number, //days
-    default: 0,
+    required: true,
   },
   test: [
     {
@@ -38,12 +38,6 @@ const planSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Question',
-      default: [],
-    },
-  ],
-  hackbooks: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
       default: [],
     },
   ],
