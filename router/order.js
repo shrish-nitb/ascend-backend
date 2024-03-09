@@ -87,7 +87,7 @@ router.post("/callback", async (req, res) => {
       .digest("hex") +
     "###" +
     process.env.PAY_SALT_KEY;
-  if (CHECKSUM != req.get("x-verify")) {
+  if (CHECKSUM != req.get("X-VERIFY")) {
     return;
   }
   const transaction = JSON.parse(atob(req.body.response));
