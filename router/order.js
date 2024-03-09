@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 var hash = require("hash.js");
 
-const { verifyToken } = require("../helper/firebase");
+const { verifyToken } = require("../utils/firebase");
 const Plan = require("../model/plan");
 const Order = require("../model/order");
 const User = require("../model/user");

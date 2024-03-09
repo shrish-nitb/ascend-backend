@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { connectDB } = require("./helper/database");
+const { connectDB } = require("./utils/database");
 
 const express = require("express");
 const path = require("path");
