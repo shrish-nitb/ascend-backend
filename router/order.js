@@ -12,9 +12,15 @@ const Order = require("../model/order");
 const User = require("../model/user");
 
 const verificationMiddleware = async (req, res, next) => {
-  //add try catch
-  const {accessToken} = req.body;
-  decodedToken = await verifyToken(accessToken);
+  let token = req.header("Authorization");
+  if (token && token.startsWith("Bearer ")) {
+    token = token.slice(7);
+  } else if (req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  } else if (req.body && req.body.token) {
+    token = req.body.token;
+  }
+  decodedToken = await verifyToken(token);
   req.decodedToken = decodedToken;
   next();
 };
