@@ -33,12 +33,6 @@ const questionSchema = new mongoose.Schema({
   options: {
     type: [
       {
-        _id: {
-          type: mongoose.Schema.Types.ObjectId,
-          default: mongoose.Types.ObjectId,
-          unique: true,
-          required: true,
-        },
         value: {
           type: String,
           required: true,

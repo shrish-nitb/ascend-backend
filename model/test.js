@@ -10,13 +10,13 @@
 //      duration, number, mandatory
 //  duration, number, mandatory
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
     unique: true,
-    ref: 'Question', 
+    ref: "Question",
     required: true,
   },
   positives: {
@@ -45,9 +45,13 @@ const sectionSchema = new mongoose.Schema({
 });
 
 const testSchema = new mongoose.Schema({
-  name:{
+  name: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    default: "",
   },
   instructions: {
     type: String,
@@ -63,6 +67,6 @@ const testSchema = new mongoose.Schema({
   },
 });
 
-const Test = mongoose.model('Test', testSchema);
+const Test = mongoose.model("Test", testSchema);
 
 module.exports = Test;
