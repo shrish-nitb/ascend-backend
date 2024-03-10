@@ -68,19 +68,19 @@ const questionSchema = new mongoose.Schema({
       required: true,
     },
   },
-  isPaid:{
+  isPaid: {
     type: Boolean,
     default: false,
-  }
+  },
 });
+
+const Question = mongoose.model("Question", questionSchema);
 
 // questionSchema.virtual("answer", {
 //   ref: "Answer",
 //   localField: "_id",
 //   foreignField: "_id",
 // });
-
-const Question = mongoose.model("Question", questionSchema);
 
 const answerSchema = new mongoose.Schema({
   _id: {
