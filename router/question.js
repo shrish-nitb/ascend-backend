@@ -7,12 +7,26 @@ router.post("/list", async (req, res) => {
   try {
     const { id, type, difficulty, topic } = req.body;
 
-    if(id == undefined || type == undefined || difficulty == undefined || topic == undefined){
-        return res.status(400).json({ error: 'Insufficient parameter' });
+    if (
+      id == undefined ||
+      type == undefined ||
+      difficulty == undefined ||
+      topic == undefined ||
+      subtopic == undefined
+    ) {
+      return res.status(400).json({ error: "Insufficient parameter" });
     }
 
-    if(id == "" && type == "" && difficulty == "" && topic == ""){
-        return res.status(400).json({ error: 'Please provide atleast one non empty parameter' });
+    if (
+      id == "" &&
+      type == "" &&
+      difficulty == "" &&
+      topic == "" &&
+      subtopic == ""
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Please provide atleast one non empty parameter" });
     }
 
     const query = {};
@@ -20,6 +34,7 @@ router.post("/list", async (req, res) => {
     if (type != "") query.type = type;
     if (difficulty != "") query["meta.tag"] = difficulty;
     if (topic != "") query["meta.topic"] = topic;
+    if (subtopic != "") query["meta.subtopic"] = subtopic;
     query.isPaid = false;
 
     const questions = await Question.find(query);
@@ -31,27 +46,42 @@ router.post("/list", async (req, res) => {
   }
 });
 
-module.exports = router;
+router.post("/add", async (req, res) => {
+  try {
+    const questionObj = req.body;
+    const response = await addQuestion(questionObj);
+    res.status(201).json(response);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 async function addQuestion(questionObj) {
-  const { answer, ...q } = questionObj;
-  const question = await Question.create(q);
-  switch (question.type) {
-    case "SINGLE": {
-      if (answer < question.options.length && answer > -1) {
-        await Answer.create({
-          _id: question._id,
-          answer: question.options[answer]._id,
-        });
+  try {
+    const { answer, ...q } = questionObj;
+    const question = await Question.create(q);
+    switch (question.type) {
+      case "SINGLE": {
+        if (answer < question.options.length && answer > -1) {
+          await Answer.create({
+            _id: question._id,
+            answer: question.options[answer]._id,
+          });
+        }
+        //else rollback question and create error 'Answer out of range'
+        break;
       }
-      //else rollback question and create error 'Answer out of range'
-      break;
+      default: {
+        //case for 'NUMERICAL' and 'SUBJECTIVE' question.type
+        await Answer.create({ _id: question._id, answer: answer });
+        break;
+      }
     }
-    default: {
-      //case for 'NUMERICAL' and 'SUBJECTIVE' question.type
-      await Answer.create({ _id: question._id, answer: answer });
-      break;
-    }
+    return question;
+  } catch (error) {
+    throw error;
   }
-  return question._id;
 }
+
+module.exports = router;

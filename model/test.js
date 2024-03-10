@@ -45,6 +45,10 @@ const sectionSchema = new mongoose.Schema({
 });
 
 const testSchema = new mongoose.Schema({
+  name:{
+    type: String,
+    required: true,
+  },
   instructions: {
     type: String,
     required: true,

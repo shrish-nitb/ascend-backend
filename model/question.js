@@ -91,6 +91,10 @@ const answerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true,
   },
+  solution: {
+    type: String,
+    default: "",
+  },
 });
 
 const Answer = mongoose.model("Answer", answerSchema);
