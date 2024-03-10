@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const planSchema = new mongoose.Schema({
   plan: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Question', 
+    ref: "Question",
     required: true,
   },
-  order:{
+  order: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Order', 
+    ref: "Order",
     required: true,
   },
   startDate: {
@@ -19,26 +19,26 @@ const planSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-})
+});
 
 const userSchema = new mongoose.Schema({
   uid: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   joinedOn: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   phone: {
     type: Number,
@@ -46,15 +46,31 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    default: ""
+    default: "",
   },
   plans: {
     type: [planSchema],
     default: [],
-    required: true
-  }
+    required: true,
+  },
+  attemptedTest: {
+    type: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+        },
+        createdAt: {
+          type: mongoose.Schema.Types.Date,
+          default: Date.now(),
+        },
+      },
+    ],
+    default: [],
+    required: true,
+  },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

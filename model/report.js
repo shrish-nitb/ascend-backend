@@ -38,6 +38,10 @@ const reportSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  maximum: {
+    type: Number,
+    default: 0,
+  },
   sections: [
     {
       name: {
@@ -45,6 +49,10 @@ const reportSchema = new mongoose.Schema({
         required: true,
       },
       points: {
+        type: Number,
+        default: 0,
+      },
+      maximum: {
         type: Number,
         default: 0,
       },
@@ -90,10 +98,10 @@ const reportSchema = new mongoose.Schema({
         required: true,
       },
       start: {
-        type : Date,
+        type: Date,
       },
       end: {
-        type : Date,
+        type: Date,
       },
     },
   ],
@@ -102,10 +110,10 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
   start: {
-    type : Date,
+    type: Date,
   },
   end: {
-    type : Date,
+    type: Date,
   },
   submitted: {
     type: Boolean,
