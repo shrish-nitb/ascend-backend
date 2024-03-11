@@ -33,8 +33,9 @@ const planSchema = new mongoose.Schema({
     default: [],
   },
   practice: {
-    type: boolean,
-    default: false,
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Question",
+    default: [],
   },
   media: {
     type: [String],
