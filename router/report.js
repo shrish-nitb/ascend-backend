@@ -31,7 +31,7 @@ router.put("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/save", async (req, res) => {
   try {
     const { report } = req.body;
     const message = await submitReport(report);
@@ -218,9 +218,12 @@ async function getAnalytics(report) {
           question.solution = answerObj.solution;
         })
       );
+      //write logic to calculate sectionwise rank
     })
   );
+
+  //write logic to calculate rank in the test
   return analyticsObj;
 }
 
-async function calculateRank(testID, marks) {}
+
