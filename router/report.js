@@ -143,11 +143,11 @@ async function submitReport(report) {
     let incomplete = false;
     sections.forEach((section, index) => {
       if (!section.start || !section.end) {
+        message = `cannot submit the test please attempt section ${index + 1}`;
         incomplete = true;
       }
     });
     if (incomplete) {
-      message = `cannot submit the test please attempt section ${index + 1}`;
       return message;
     }
     let testScore = 0;
