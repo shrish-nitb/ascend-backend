@@ -42,6 +42,14 @@ const reportSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  positives:{
+    type: Number,
+    default: 0,
+  },
+  negatives:{
+    type: Number,
+    default: 0,
+  },
   sections: [
     {
       name: {
@@ -53,6 +61,14 @@ const reportSchema = new mongoose.Schema({
         default: 0,
       },
       maximum: {
+        type: Number,
+        default: 0,
+      },
+      positives:{
+        type: Number,
+        default: 0,
+      },
+      negatives:{
         type: Number,
         default: 0,
       },
@@ -121,6 +137,7 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
 });
+
 
 const Report = mongoose.model("Report", reportSchema);
 
