@@ -22,6 +22,7 @@ const verificationMiddleware = async (req, res, next) => {
 router.put("/", async (req, res) => {
   try {
     const { report, data } = req.body;
+    console.log(report, data)
     const message = await saveandcontinue(report, data);
     res.status(200).json({ message: message });
   } catch (error) {
@@ -44,8 +45,6 @@ router.post("/", async (req, res) => {
 router.get("/list", verificationMiddleware, async (req, res) => {
   try {
     const userID = req.decodedToken.uid;
-
-    //we need to return the testID along with the reportID
     const reports = await Report.find({ user: userID, submitted: true }).select(
       "_id test"
     );
