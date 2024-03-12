@@ -25,7 +25,8 @@ router.put("/", async (req, res) => {
     const { report, data } = req.body;
     console.log(report, data)
     const message = await saveandcontinue(report, data);
-    res.status(200).json({ receivedTS: requestreceivedat, message: message, responseTS: Date.now() });
+    let result = { receivedTS: requestreceivedat, message: message, responseTS: Date.now() }
+    res.status(200).json(result);
   } catch (error) {
     console.log("Error ", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -34,7 +35,7 @@ router.put("/", async (req, res) => {
 
 router.post("/save", async (req, res) => {
   try {
-    
+
     const { report } = req.body;
     const message = await submitReport(report);
     res.status(200).json({ message: message });
