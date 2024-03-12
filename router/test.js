@@ -97,7 +97,7 @@ async function startTest(testID, userID) {
     });
 
     let newTest = {
-        _id: new mongoose.Types.ObjectId(testID)
+      _id: new mongoose.Types.ObjectId(testID)
     }
 
     await User.updateOne(

@@ -21,10 +21,11 @@ const verificationMiddleware = async (req, res, next) => {
 
 router.put("/", async (req, res) => {
   try {
+    let requestreceivedat = Date.now();
     const { report, data } = req.body;
     console.log(report, data)
     const message = await saveandcontinue(report, data);
-    res.status(200).json({ message: message });
+    res.status(200).json({ receivedTS: requestreceivedat, message: message, responseTS: Date.now() });
   } catch (error) {
     console.log("Error ", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -33,10 +34,10 @@ router.put("/", async (req, res) => {
 
 router.post("/save", async (req, res) => {
   try {
-    let requestreceivedat = Date.now();
+    
     const { report } = req.body;
     const message = await submitReport(report);
-    res.status(200).json({ receivedTS: requestreceivedat, message: message, responseTS: Date.now() });
+    res.status(200).json({ message: message });
   } catch (error) {
     console.log("Error ", error);
     res.status(500).json({ error: "Internal Server Error" });
