@@ -81,10 +81,9 @@ async function saveandcontinue(report, data) {
         if (!section.start) {
           updatedSectionIndex = index;
           updatedSectionStatus = "start";
-          section.start = performance.now();
-          message = `section ${index + 1} started successfully at ${
-            section.start
-          }`;
+          section.start = Date.now();
+          message = `section ${index + 1} started successfully at ${section.start
+            }`;
         } else if (!section.end) {
           updatedSectionIndex = index;
           updatedSectionStatus = "end";
@@ -97,15 +96,13 @@ async function saveandcontinue(report, data) {
             }
             return item;
           });
-          section.end = performance.now();
-          message = `section ${index + 1} submitted successfully at ${
-            section.end
-          }`;
+          section.end = Date.now();
+          message = `section ${index + 1} submitted successfully at ${section.end
+            }`;
         } else {
           updateable = false;
-          message = `section ${
-            index + 1
-          } is already submitted for evaluation and is in read-only mode`;
+          message = `section ${index + 1
+            } is already submitted for evaluation and is in read-only mode`;
         }
       }
       return section;
