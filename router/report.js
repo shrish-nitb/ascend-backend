@@ -33,9 +33,10 @@ router.put("/", async (req, res) => {
 
 router.post("/save", async (req, res) => {
   try {
+    let requestreceivedat = Date.now();
     const { report } = req.body;
     const message = await submitReport(report);
-    res.status(200).json({ message: message });
+    res.status(200).json({ receivedTS: requestreceivedat, message: message, responseTS: Date.now() });
   } catch (error) {
     console.log("Error ", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -81,9 +82,9 @@ async function saveandcontinue(report, data) {
         if (!section.start) {
           updatedSectionIndex = index;
           updatedSectionStatus = "start";
-          section.start = Date.now();
-          message = `section ${index + 1} started successfully at ${section.start
-            }`;
+          let starttimestamp = Date.now();
+          section.start = starttimestamp;
+          message = `section ${index + 1} started successfully at ${starttimestamp}`;
         } else if (!section.end) {
           updatedSectionIndex = index;
           updatedSectionStatus = "end";
@@ -96,9 +97,9 @@ async function saveandcontinue(report, data) {
             }
             return item;
           });
-          section.end = Date.now();
-          message = `section ${index + 1} submitted successfully at ${section.end
-            }`;
+          let endtimestamp = Date.now();
+          section.end = endtimestamp;
+          message = `section ${index + 1} submitted successfully at ${endtimestamp}`;
         } else {
           updateable = false;
           message = `section ${index + 1
