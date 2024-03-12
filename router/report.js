@@ -81,7 +81,7 @@ async function saveandcontinue(report, data) {
         if (!section.start) {
           updatedSectionIndex = index;
           updatedSectionStatus = "start";
-          section.start = Date.now();
+          section.start = performance.now();
           message = `section ${index + 1} started successfully at ${
             section.start
           }`;
@@ -97,7 +97,7 @@ async function saveandcontinue(report, data) {
             }
             return item;
           });
-          section.end = Date.now();
+          section.end = performance.now();
           message = `section ${index + 1} submitted successfully at ${
             section.end
           }`;
