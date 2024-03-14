@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const planSchema = new mongoose.Schema({
   plan: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Question",
+    ref: "Plan",
     required: true,
   },
   order: {
@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
     default: 0,
   },
   bio: {
+    type: String,
+    default: "",
+  },
+  picture:{
     type: String,
     default: "",
   },

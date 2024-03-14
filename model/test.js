@@ -15,9 +15,9 @@ const mongoose = require("mongoose");
 const questionSchema = new mongoose.Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
-    unique: true,
     ref: "Question",
     required: true,
+    unique: false, 
   },
   positives: {
     type: Number,
@@ -42,6 +42,14 @@ const sectionSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  maximum: {
+    type: Number,
+    default: 0,
+  },
+  size: {
+    type: Number,
+    default: 0,
+  }
 });
 
 const testSchema = new mongoose.Schema({
@@ -65,6 +73,33 @@ const testSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  maximum: {
+    type: Number,
+    default: 0,
+  },
+  size: {
+    type: Number,
+    default: 0,
+  }
+});
+
+testSchema.pre('save', function (next) {
+  this.size = 0;
+  this.maximum = 0;
+  this.sections.map((section) => {
+    let temp = 0;
+    section.maximum = 0;
+    section.questions.forEach((question) => {
+      temp++;
+      section.maximum += question.positives;
+    });
+    this.maximum += section.maximum;
+    section.size = temp;
+    this.size += section.size;
+    return section;
+  });
+
+  next();
 });
 
 const Test = mongoose.model("Test", testSchema);

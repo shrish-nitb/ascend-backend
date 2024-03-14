@@ -2,25 +2,11 @@ const Test = require("../model/test");
 const Report = require("../model/report");
 const User = require("../model/user");
 const mongoose = require("mongoose");
-const { verifyToken } = require("../utils/firebase");
+const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require("../utils/middleware")
 const express = require("express");
 const router = express.Router();
 
-const verificationMiddleware = async (req, res, next) => {
-  let token = req.header("Authorization");
-  if (token && token.startsWith("Bearer ")) {
-    token = token.slice(7);
-  } else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  } else if (req.body && req.body.token) {
-    token = req.body.token;
-  }
-  decodedToken = await verifyToken(token);
-  req.decodedToken = decodedToken;
-  next();
-};
-
-router.get("/:testid", async (req, res) => {
+router.get("/:testid", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
   try {
     let meta = await getTestMeta(req.params.testid);
     res.status(200).json(meta);
@@ -30,7 +16,7 @@ router.get("/:testid", async (req, res) => {
   }
 });
 
-router.post("/", verificationMiddleware, async (req, res) => {
+router.post("/", firebaseTokenVerifier, userAuthLookup, authorizationProvider('TEST'), async (req, res) => {
   try {
     const { test } = req.body;
     const init_test = await startTest(test, req.decodedToken.uid);
@@ -92,6 +78,8 @@ async function startTest(testID, userID) {
     let init_report = new Report({
       test: test_fetched._id,
       user: userID,
+      maximum: test_fetched.maximum,
+      size: test_fetched.size,
       sections: test_fetched.sections,
       duration: test_fetched.duration,
     });

@@ -6,26 +6,14 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 var hash = require("hash.js");
 
-const { verifyToken } = require("../utils/firebase");
+const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
+
 const Plan = require("../model/plan");
 const Order = require("../model/order");
 const User = require("../model/user");
 
-const verificationMiddleware = async (req, res, next) => {
-  let token = req.header("Authorization");
-  if (token && token.startsWith("Bearer ")) {
-    token = token.slice(7);
-  } else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  } else if (req.body && req.body.token) {
-    token = req.body.token;
-  }
-  decodedToken = await verifyToken(token);
-  req.decodedToken = decodedToken;
-  next();
-};
 
-router.get("/:plan", verificationMiddleware, async (req, res) => {
+router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
   const planId = req.params.plan;
   const userId = req.decodedToken.uid;
   const planObj = await Plan.find({ _id: planId }).exec();

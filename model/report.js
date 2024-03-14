@@ -38,15 +38,19 @@ const reportSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  maximum: {
-    type: Number,
-    default: 0,
-  },
   positives:{
     type: Number,
     default: 0,
   },
   negatives:{
+    type: Number,
+    default: 0,
+  },
+  maximum: {
+    type: Number,
+    default: 0,
+  },
+  size: {
     type: Number,
     default: 0,
   },
@@ -61,6 +65,10 @@ const reportSchema = new mongoose.Schema({
         default: 0,
       },
       maximum: {
+        type: Number,
+        default: 0,
+      },
+      size: {
         type: Number,
         default: 0,
       },

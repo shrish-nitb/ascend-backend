@@ -13,7 +13,10 @@ async function connectDB() {
 }
 
 async function getUser(uid) {
-  return User.find({ uid: uid }).exec();
+  return User.findOne({ uid: uid }).populate({
+    path: "plans.plan",
+    model: "Plan",
+  }).exec();
 }
 
 module.exports = { connectDB, getUser };

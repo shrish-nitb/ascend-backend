@@ -2,30 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
+const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require("../utils/middleware")
 
-const { verifyToken } = require("../utils/firebase");
-
-const verificationMiddleware = async (req, res, next) => {
-  let token = req.header("Authorization");
-  if (token && token.startsWith("Bearer ")) {
-    token = token.slice(7);
-  } else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  } else if (req.body && req.body.token) {
-    token = req.body.token;
-  }
-  decodedToken = await verifyToken(token);
-  req.decodedToken = decodedToken;
-  next();
-};
-
-router.put("/", async (req, res) => {
+router.put("/", firebaseTokenVerifier, userAuthLookup, authorizationProvider('REPORT'), async (req, res) => {
   try {
-    let requestreceivedat = Date.now();
+    let requestreceivedate = Date.now();
     const { report, data } = req.body;
-    console.log(report, data)
     const message = await saveandcontinue(report, data);
-    let result = { receivedTS: requestreceivedat, message: message, responseTS: Date.now() }
+    let result = { receivedTS: requestreceivedate, message: message, responseTS: Date.now() }
     res.status(200).json(result);
   } catch (error) {
     console.log("Error ", error);
@@ -33,9 +17,8 @@ router.put("/", async (req, res) => {
   }
 });
 
-router.post("/save", async (req, res) => {
+router.post("/save", firebaseTokenVerifier, userAuthLookup, authorizationProvider('REPORT'), async (req, res) => {
   try {
-
     const { report } = req.body;
     const message = await submitReport(report);
     res.status(200).json({ message: message });
@@ -45,12 +28,12 @@ router.post("/save", async (req, res) => {
   }
 });
 
-router.get("/list", verificationMiddleware, async (req, res) => {
+router.get("/list", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
   try {
     const userID = req.decodedToken.uid;
     const reports = await Report.find({ user: userID, submitted: true }).select(
       "_id test"
-    );
+    ).populate('test', '-sections');
     res.status(200).json(reports);
   } catch (error) {
     console.log("Error ", error);
@@ -58,10 +41,10 @@ router.get("/list", verificationMiddleware, async (req, res) => {
   }
 });
 
-router.get("/:reportID", async (req, res) => {
+router.get("/:report", firebaseTokenVerifier, userAuthLookup, authorizationProvider('REPORT'), async (req, res) => {
   try {
-    const reportID = req.params.reportID;
-    const analytics = await getAnalytics(reportID);
+    const { report } = req.params;
+    const analytics = await getAnalytics(report);
     res.status(200).json(analytics);
   } catch (error) {
     console.log("Error ", error);
@@ -117,12 +100,12 @@ async function saveandcontinue(report, data) {
     if (updatedSectionIndex == 0 && updatedSectionStatus == "start") {
       updateObj.start = sectionsObj[0].start;
     }
-    if (
-      updatedSectionIndex == sectionsObj.length - 1 &&
-      updatedSectionStatus == "end"
-    ) {
-      updateObj.end = sectionsObj[sectionsObj.length - 1].end;
-    }
+    // if (
+    //   updatedSectionIndex == sectionsObj.length - 1 &&
+    //   updatedSectionStatus == "end"
+    // ) {
+    //   updateObj.end = sectionsObj[sectionsObj.length - 1].end;
+    // }
     await Report.updateOne({ _id: report }, updateObj);
     return message;
   } catch (error) {
@@ -141,12 +124,12 @@ async function submitReport(report) {
     }
     let sections = reportObj.sections;
     let incomplete = false;
-    sections.forEach((section, index) => {
-      if (!section.start || !section.end) {
-        message = `cannot submit the test please attempt section ${index + 1}`;
-        incomplete = true;
-      }
-    });
+    // sections.forEach((section, index) => {
+    //   if (!section.start || !section.end) {
+    //     message = `cannot submit the test please attempt section ${index + 1}`;
+    //     incomplete = true;
+    //   }
+    // });
     if (incomplete) {
       return message;
     }

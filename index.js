@@ -7,6 +7,8 @@ const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
+const {createTest} = require("./scripts/create_test");
+
 const app = express();
 app.use(cookieParser());
 app.use(cors());
@@ -17,14 +19,12 @@ const PORT = process.env.PORT;
 const userRouter = require("./router/user");
 const ordersRouter = require("./router/order");
 const plansRouter = require("./router/plan");
-const questionsRouter = require("./router/question");
 const testRouter = require("./router/test");
 const reportRouter = require("./router/report");
 
 app.use("/user", userRouter);
 app.use("/orders", ordersRouter);
 app.use("/plans", plansRouter);
-app.use("/questions", questionsRouter);
 app.use("/test", testRouter);
 app.use("/report", reportRouter);
 
@@ -37,6 +37,7 @@ connectDB()
         `Successfully connected to the database and running on port ${PORT}`
       );
     });
+    createTest();
   })
   .catch((error) => {
     console.log(error);

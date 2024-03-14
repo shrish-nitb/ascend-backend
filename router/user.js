@@ -1,36 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../utils/firebase");
-const { getUser } = require("../utils/database");
 const User = require("../model/user");
+const { getUser } = require("../utils/database");
 
-router.use("/", async (req, res, next) => {
-  let token = req.header("Authorization");
-  if (token && token.startsWith("Bearer ")) {
-    token = token.slice(7);
-  } else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  } else if (req.body && req.body.token) {
-    token = req.body.token;
-  }
-  decodedToken = await verifyToken(token);
-  req.decodedToken = decodedToken;
-  next();
-});
+const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
 
-router.get("/", async (req, res) => {
+
+router.get("/", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
   try {
-    const user = await getUser(req.decodedToken.uid);
-    res.status(200).json(user[0]);
+    res.status(200).json(req.user);
   } catch (error) {
     console.error(error);
     res.status(400).json(error);
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", firebaseTokenVerifier, async (req, res) => {
   try {
-    user = await signup(req.decodedToken);
+    let user = await getUser(req.decodedToken.uid);
+    if (!user) {
+      user = await signup(req.decodedToken);
+    }
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
@@ -40,17 +30,13 @@ router.post("/", async (req, res) => {
 
 async function signup(decodedToken) {
   try {
-    const user = await getUser(decodedToken.uid);
-    if (user.length == 0) {
-      const newUser = await User.create({
-        uid: decodedToken.uid,
-        name: decodedToken.name,
-        email: decodedToken.email,
-      });
-      return newUser;
-    } else {
-      return user[0];
-    }
+    const newUser = await User.create({
+      uid: decodedToken.uid,
+      name: decodedToken.name,
+      email: decodedToken.email,
+      picture: decodedToken.picture,
+    });
+    return newUser;
   } catch (error) {
     throw error;
   }
