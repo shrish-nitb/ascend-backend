@@ -123,20 +123,19 @@ async function submitReport(report) {
       return message;
     }
     let sections = reportObj.sections;
-    let incomplete = false;
+    // let incomplete = false;
     // sections.forEach((section, index) => {
     //   if (!section.start || !section.end) {
     //     message = `cannot submit the test please attempt section ${index + 1}`;
     //     incomplete = true;
     //   }
     // });
-    if (incomplete) {
-      return message;
-    }
+    // if (incomplete) {
+    //   return message;
+    // }
     let testScore = 0;
     let positiveTestScore = 0;
     let negativeTestScore = 0;
-    let maximumTestScore = 0;
     sections = await Promise.all(
       sections.map(async (section) => {
         let sectionScore = 0;
@@ -159,8 +158,6 @@ async function submitReport(report) {
                 negativeTestScore += question.negatives;
               }
             }
-            section.maximum += question.positives;
-            maximumTestScore += question.positives;
             sectionScore += question.points;
             testScore += question.points;
             return question;
@@ -174,7 +171,6 @@ async function submitReport(report) {
     reportObj.points = testScore;
     reportObj.positives = positiveTestScore;
     reportObj.negatives = negativeTestScore;
-    reportObj.maximum = maximumTestScore;
     reportObj.submitted = true;
     await Report.updateOne({ _id: report }, reportObj);
     message = "Test evaluated successfully";
