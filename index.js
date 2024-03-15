@@ -7,7 +7,7 @@ const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const {createTest} = require("./scripts/create_test");
+// const {createTest} = require("./scripts/create_test");
 
 const app = express();
 app.use(cookieParser());
@@ -37,7 +37,7 @@ connectDB()
         `Successfully connected to the database and running on port ${PORT}`
       );
     });
-    createTest();
+    // createTest();
   })
   .catch((error) => {
     console.log(error);
