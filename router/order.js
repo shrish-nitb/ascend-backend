@@ -66,9 +66,10 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
 
     let response = await axios.request(config)
 
-    res.status(200).json(response.data);
+    // res.status(200).json(response.data);
     // console.log(response);
-    // res.redirect(301, response?.data?.data?.instrumentResponse?.redirectInfo?.url)
+    res.set('Access-Control-Allow-Origin', '*');
+    res.redirect(301, response?.data?.data?.instrumentResponse?.redirectInfo?.url)
 
   } catch (error) {
     console.log(error)
