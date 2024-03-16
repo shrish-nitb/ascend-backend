@@ -60,8 +60,8 @@ function authorizationProvider(service) {
                 if (!reportID) {
                     //throw error
                 }
-                const ownerID = await Report.findOne({ _id: reportID }).select('user')
-                if (req.decodedToken.uid != ownerID) {
+                const owner = await Report.findOne({ _id: reportID })
+                if (req.decodedToken.uid != owner.user) {
                     throw new Error("Insufficient rights");
                 }
             } else if (service == 'PRACTICE') {
