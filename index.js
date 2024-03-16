@@ -10,15 +10,8 @@ const cookieParser = require("cookie-parser");
 // const {createTest} = require("./scripts/create_test");
 
 const app = express();
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
 app.use(cookieParser());
-// app.use(cors());
+app.use(cors());
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT;
