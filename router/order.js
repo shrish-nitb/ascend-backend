@@ -20,9 +20,26 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
     const planID = req.params.plan;
     const userID = req.user.uid;
 
+<<<<<<< HEAD
     if (!planID) {
       throw new Error("Please provide valid plan ID")
     }
+=======
+  const requestData = btoa(
+    JSON.stringify({
+      merchantId: process.env.MERCHANT_ID,
+      merchantTransactionId: orderObj._id,
+      merchantUserId: userId,
+      amount: planObj[0].price,
+      redirectUrl: "https://learn.projectascend.in/dashboard/my-profile",
+      redirectMode: "REDIRECT",
+      callbackUrl: "https://project-ascend-backend.vercel.app/orders/callback",
+      paymentInstrument: {
+        type: "PAY_PAGE",
+      },
+    })
+  );
+>>>>>>> 80272db99af7882591fa09b9177c6678670adcd3
 
     const planObj = await Plan.find({ _id: planID }).exec();
     //use findPlan db util here
@@ -30,9 +47,41 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
       throw new Error("Plan does not Exist")
     }
 
+<<<<<<< HEAD
     const orderObj = await Order.create({
       plan: planID,
       user: userID,
+=======
+  let CHECKSUM =
+    hash
+      .sha256()
+      .update(requestData + "/pg/v1/pay" + process.env.PAY_SALT)
+      .digest("hex") +
+    "###" +
+    process.env.PAY_SALT_KEY;
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://api.phonepe.com/apis/hermes/pg/v1/pay",
+    headers: {
+      "X-VERIFY": CHECKSUM,
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      res.status(200).json(response.data);
+      
+      // res.redirect(response?.data?.data?.instrumentResponse?.redirectInfo?.url)
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(500).json({ message: 'Internal Server Error' });
+>>>>>>> 80272db99af7882591fa09b9177c6678670adcd3
     });
     //use createOrder db util here
 
