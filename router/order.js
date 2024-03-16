@@ -66,9 +66,9 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
   axios
     .request(config)
     .then((response) => {
-      // res.status(200).json(response.data);
+      res.status(200).json(response.data);
       
-      res.redirect(response?.data?.data?.instrumentResponse?.redirectInfo?.url)
+      // res.redirect(response?.data?.data?.instrumentResponse?.redirectInfo?.url)
     })
     .catch((error) => {
       console.log(error)
