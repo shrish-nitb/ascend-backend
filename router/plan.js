@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Plan = require('../model/plan'); 
 
-//GET retrieve all plans
+//GET : retrieve all plans
 router.get('/', async (req, res) => {
   try {
-    const plans = await Plan.find().populate('test', '-sections.questions -sections._id');;
+    //use listPlans db utils here
+    const plans = await Plan.find().populate('test', '-sections.questions -sections._id');
     res.status(200).json(plans);
   } catch (error) {
     console.error(error);
@@ -14,27 +15,27 @@ router.get('/', async (req, res) => {
 });
 
 // POST create a new plan
-router.post('/', async (req, res) => {
-    try {
-      const { name, description, price, validity, test, questions, media } = req.body;
+// router.post('/', async (req, res) => {
+//     try {
+//       const { name, description, price, validity, test, questions, media } = req.body;
   
-      const newPlan = new Plan({
-        name,
-        description,
-        price,
-        validity,
-        test,
-        questions,
-        media,
-      });
+//       const newPlan = new Plan({
+//         name,
+//         description,
+//         price,
+//         validity,
+//         test,
+//         questions,
+//         media,
+//       });
   
-      const savedPlan = await newPlan.save();
+//       const savedPlan = await newPlan.save();
       
-      res.status(201).json(savedPlan);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
-  });
+//       res.status(201).json(savedPlan);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: 'Internal Server Error' });
+//     }
+//   });
 
 module.exports = router;

@@ -13,7 +13,7 @@ router.put("/", firebaseTokenVerifier, userAuthLookup, authorizationProvider('RE
     res.status(200).json(result);
   } catch (error) {
     console.log("Error ", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -24,7 +24,7 @@ router.post("/save", firebaseTokenVerifier, userAuthLookup, authorizationProvide
     res.status(200).json({ message: message });
   } catch (error) {
     console.log("Error ", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -37,7 +37,7 @@ router.get("/list", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
     res.status(200).json(reports);
   } catch (error) {
     console.log("Error ", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -48,7 +48,7 @@ router.get("/:report", firebaseTokenVerifier, userAuthLookup, authorizationProvi
     res.status(200).json(analytics);
   } catch (error) {
     console.log("Error ", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

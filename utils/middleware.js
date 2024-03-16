@@ -24,7 +24,7 @@ async function userAuthLookup(req, res, next) {
         }
         next();
     } catch (error) {
-        res.status(401).json({ error: `Unauthorized, ${error}` });
+        res.status(401).json({ message: `Unauthorized, ${error}` });
     }
 }
 
@@ -66,7 +66,7 @@ function authorizationProvider(service) {
 
             next();
         } catch (error) {
-            res.status(401).json({ error: `Unauthorized, ${error}` });
+            res.status(401).json({ message: `Unauthorized, ${error}` });
         }
     }
 }
