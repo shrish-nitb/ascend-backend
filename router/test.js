@@ -59,13 +59,13 @@ async function getTestMeta(testID) {
 async function startTest(testID, userID) {
   try {
     let isAlreadyAttempted = false;
-    // let attemptedTests = (await User.find({uid: userID }).exec())[0]
-    //   .attemptedTest;
-    // attemptedTests.forEach((test) => {
-    //   if (test._id == testID) {
-    //     isAlreadyAttempted = true;
-    //   }
-    // });
+    let attemptedTests = (await User.find({uid: userID }).exec())[0]
+      .attemptedTest;
+    attemptedTests.forEach((test) => {
+      if (test._id == testID) {
+        isAlreadyAttempted = true;
+      }
+    });
 
     if (isAlreadyAttempted) {
       return {
