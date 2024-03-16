@@ -64,7 +64,7 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
       data: data,
     };
 
-    await axios.request(config)
+    let response = await axios.request(config)
 
     // res.status(200).json(response.data);
     // console.log(response);
