@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // POST create a new plan
 // router.post('/', async (req, res) => {
 //     try {
-//       const { name, description, price, validity, test, questions, media } = req.body;
+//       const { name, description, price, validity, test, practice, media } = req.body;
   
 //       const newPlan = new Plan({
 //         name,
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 //         price,
 //         validity,
 //         test,
-//         questions,
+//         practice,
 //         media,
 //       });
   
