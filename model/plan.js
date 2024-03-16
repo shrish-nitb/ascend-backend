@@ -33,7 +33,7 @@ const planSchema = new mongoose.Schema({
     default: [],
   },
   practice: {
-    type: boolean,
+    type: Boolean,
     default: false,
   },
   media: {
