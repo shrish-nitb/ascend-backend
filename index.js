@@ -21,12 +21,15 @@ const ordersRouter = require("./router/order");
 const plansRouter = require("./router/plan");
 const testRouter = require("./router/test");
 const reportRouter = require("./router/report");
+const questionRouter = require("./router/question");
+
 
 app.use("/user", userRouter);
 app.use("/orders", ordersRouter);
 app.use("/plans", plansRouter);
 app.use("/test", testRouter);
 app.use("/report", reportRouter);
+app.use("/question",questionRouter)
 
 
 
