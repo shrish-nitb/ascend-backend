@@ -226,7 +226,7 @@ async function getAnalytics(report) {
   analyticsObj.rank = count + 1;
 
 
-  const topUsers = await Report.find({
+  let topUsers = await Report.find({
     test: analyticsObj.test,
     submitted: true,
   }, "user points -_id")
