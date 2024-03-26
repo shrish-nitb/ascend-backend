@@ -65,7 +65,21 @@ function authorizationProvider(service) {
                     throw new Error("Insufficient rights");
                 }
             } else if (service == 'PRACTICE') {
-
+                let purchased = false;
+                const plans = req.user.plans;
+                for (let i = 0; i < plans.length; i++) {
+                    const planObj = plans[i];
+                    let currentTime = (new Date()).getTime();
+                    let expiryDate = (new Date(planObj.expiryDate)).getTime();
+                    let isExpired = currentTime > expiryDate;
+                    if (planObj.plan.practice && !isExpired) {
+                        purchased = true;
+                        break;
+                    }
+                }
+                if (!purchased) {
+                    throw new Error("Out of Plan");
+                }
             }
 
             next();

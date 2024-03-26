@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { Question, Answer } = require("../model/question");
+const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require("../utils/middleware");
 
-router.get('/solve/:questionId/:markedValue', async (req, res) => {
+router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
@@ -20,7 +21,7 @@ router.get('/solve/:questionId/:markedValue', async (req, res) => {
 });
 
 
-router.post("/list", async (req, res) => {
+router.post("/list", firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { id, type, difficulty, topic, subtopic } = req.body;
     console.log(req.body)
