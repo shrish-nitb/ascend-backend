@@ -235,7 +235,7 @@ async function getAnalytics(report) {
     .exec();
 
   let modTop = await Promise.all(topUsers.map(async (item)=>{
-    const userObj = await User.find({user: item.user}).exec();
+    const userObj = await User.findOne({uid: item.user}).exec();
     // item.name = name;
     // item.picture = picture;
     console.log(userObj)
