@@ -7,7 +7,7 @@ const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require
 router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
-    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false;
+    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false; //undefined (evaluates to if not found isPaid key instead of exception) || false
     if(isPaid){
       throw new Error("Test Only")
     }
@@ -70,15 +70,43 @@ router.post("/list", firebaseTokenVerifier, userAuthLookup, authorizationProvide
   }
 });
 
-// router.post("/add", async (req, res) => {
-//   try {
-//     const questionObj = req.body;
-//     const response = await addQuestion(questionObj);
-//     res.status(201).json(response);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+router.post("/add", async (req, res) => {
+  try {
+    const questionObj = req.body;
+    const response = await addQuestion(questionObj);
+    res.status(201).json(response);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: error });
+  }
+});
+
+async function addQuestion(questionObj) {
+  try {
+    const { answer, solution, ...q } = questionObj;
+    const question = await Question.create(q);
+    switch (question.type) {
+      case "SINGLE": {
+        if (answer < question.options.length && answer > -1) {
+          await Answer.create({
+            _id: question._id,
+            answer: question.options[answer]._id,
+            solution: solution,
+          });
+        }
+        //else rollback question and create error 'Answer out of range'
+        break;
+      }
+      default: {
+        //case for 'NUMERICAL' and 'SUBJECTIVE' question.type
+        await Answer.create({ _id: question._id, answer: answer, solution: solution, });
+        break;
+      }
+    }
+    return question;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = router;
