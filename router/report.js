@@ -232,7 +232,7 @@ async function getAnalytics(report) {
   }, "user points -_id")
     .sort({ points: -1 }) // Sort users in descending order of points
     .limit(5) // Limit the results to the top 3 users
-    .exec().toObject();
+    .exec();
 
   topUsers = await Promise.all(topUsers.map(async (item) => {
     let newItem = item.toObject();;
