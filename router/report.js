@@ -234,7 +234,7 @@ async function getAnalytics(report) {
     .limit(5) 
     .exec();
 
-  await Promise.all(topUsers.map(async (item) => {
+    topUsers= await Promise.all(topUsers.map(async (item) => {
     let newItem = item.toObject();;
     let userObj = await User.findOne({ uid: item.user }, "name picture -_id").exec();
     if (userObj) {
