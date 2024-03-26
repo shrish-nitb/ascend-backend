@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../model/user");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
 const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require("../utils/middleware")
@@ -233,7 +234,14 @@ async function getAnalytics(report) {
     .limit(5) // Limit the results to the top 3 users
     .exec();
 
+  topUsers.map((item)=>{
+    const {name, picture} = User.find({user: item.user}, "name picture -_id").exec();
+    item.name = name;
+    item.picture = picture;
+  })
+
   analyticsObj.leaderboard = topUsers;
+
 
   return analyticsObj;
 }
