@@ -55,11 +55,11 @@ const questionSchema = new mongoose.Schema({
     },
     topic: {
       type: String,
-      required: true,
+      default: "N/A",
     },
     subtopic: {
       type: String,
-      required: true,
+      default: "N/A",
     },
   },
   isPaid: {
