@@ -224,7 +224,7 @@ async function getAnalytics(report) {
 
   // Calculate the percentile
   analyticsObj.rank = count + 1;
-  
+
 
   const topUsers = await Report.find({
     test: analyticsObj.test,
@@ -234,12 +234,16 @@ async function getAnalytics(report) {
     .limit(5) // Limit the results to the top 3 users
     .exec();
 
-  await Promise.all(topUsers.map(async (item)=>{
-    const userObj = await User.findOne({uid: item.user}, "name picture -_id").exec();
-    item.name = userObj.name;
-    item.picture = userObj.picture;
+  await Promise.all(topUsers.map(async (item) => {
+    const userObj = await User.findOne({ uid: item.user }, "name picture -_id").exec();
+    if (userObj) {
+      item.name = userObj.name;
+      item.picture = userObj.picture;
+    } else {
+      console.log(`User not found for uid: ${item.user}`);
+    }
     return item;
-  }))
+  }));
 
   analyticsObj.leaderboard = topUsers;
 
