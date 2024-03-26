@@ -234,12 +234,11 @@ async function getAnalytics(report) {
     .limit(5) // Limit the results to the top 3 users
     .exec();
 
-  topUsers.map((item)=>{
+  await Promise.all(topUsers.map(async (item)=>{
     const {name, picture} = await User.find({user: item.user}, "name picture -_id").exec();
     item.name = name;
     item.picture = picture;
-    console.log(item)
-  })
+  }))
 
   analyticsObj.leaderboard = topUsers;
 
