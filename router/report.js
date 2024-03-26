@@ -235,7 +235,7 @@ async function getAnalytics(report) {
     .exec();
 
   topUsers.map((item)=>{
-    const {name, picture} = User.find({user: item.user}, "name picture -_id").exec();
+    const {name, picture} = await User.find({user: item.user}, "name picture -_id").exec();
     item.name = name;
     item.picture = picture;
     console.log(item)
