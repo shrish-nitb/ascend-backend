@@ -234,7 +234,7 @@ async function getAnalytics(report) {
     .limit(5) // Limit the results to the top 3 users
     .exec();
 
-  await Promise.all(topUsers.map(async (item) => {
+  topUsers = await Promise.all(topUsers.map(async (item) => {
     const userObj = await User.findOne({ uid: item.user }, "name picture -_id").exec();
     if (userObj) {
       item.name = userObj.name;
