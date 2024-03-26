@@ -5,24 +5,24 @@ const { Question, Answer } = require("../model/question");
 
 router.get('/solve/:questionId/:markedValue', async (req, res) => {
   try {
-      const { questionId, markedValue } = req.params;
-      const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
-      if (!answerDoc) {
-          return res.json({ match: false });
-      }
-      const answer = answerDoc.answer;
-      const match = (answer.toString().trim() == markedValue.toString().trim());
-      return res.json({ match });
+    const { questionId, markedValue } = req.params;
+    const answerDoc = await Answer.findOne({ _id: questionId.trim(), isPaid: false }).exec();
+    if (!answerDoc) {
+      return res.json({ correct: false });
+    }
+    const answer = answerDoc.answer;
+    const correct = (answer.toString().trim() == markedValue.toString().trim());
+    return res.json({ correct });
   } catch (error) {
-      console.error('Error:', error.message);
-      return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error:', error.message);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 
 router.post("/list", async (req, res) => {
   try {
-    const { id, type, difficulty, topic,subtopic } = req.body;
+    const { id, type, difficulty, topic, subtopic } = req.body;
     console.log(req.body)
     // if (
     //   id == undefined ||
