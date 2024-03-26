@@ -227,7 +227,7 @@ async function getAnalytics(report) {
   const topUsers = await Report.find({
     test: analyticsObj.test,
     submitted: true,
-  }, "user points")
+  }, "user points -_id")
     .sort({ points: -1 }) // Sort users in descending order of points
     .limit(5) // Limit the results to the top 3 users
     .exec();
