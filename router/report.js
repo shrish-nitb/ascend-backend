@@ -224,7 +224,7 @@ async function getAnalytics(report) {
   // Calculate the percentile
   analyticsObj.percentile = ((totalCount - count - 1) / totalCount) * 100;
 
-  const topUsers = await User.find({
+  const topUsers = await Report.find({
     test: analyticsObj.test,
     submitted: true,
   }, "user points")
