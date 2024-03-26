@@ -11,7 +11,7 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
     
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
     if (!answerDoc) {
-      return res.json({ correct: false });
+      return res.json({ correct: false, isPaid });
     }
     const answer = answerDoc.answer;
     const correct = (answer.toString().trim() == markedValue.toString().trim());
