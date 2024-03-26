@@ -242,6 +242,7 @@ async function getAnalytics(report) {
     } else {
       console.log(`User not found for uid: ${item.user}`);
     }
+    console.log(item)
     return item;
   }));
 
