@@ -136,6 +136,7 @@ async function submitReport(report) {
     let testScore = 0;
     let positiveTestScore = 0;
     let negativeTestScore = 0;
+    let endtimestamp = Date.now();
     sections = await Promise.all(
       sections.map(async (section) => {
         let sectionScore = 0;
@@ -171,6 +172,7 @@ async function submitReport(report) {
     reportObj.points = testScore;
     reportObj.positives = positiveTestScore;
     reportObj.negatives = negativeTestScore;
+    reportObj.end = endtimestamp;
     reportObj.submitted = true;
     await Report.updateOne({ _id: report }, reportObj);
     message = "Test evaluated successfully";
@@ -197,14 +199,44 @@ async function getAnalytics(report) {
           question.solution = answerObj.solution;
         })
       );
-      //write logic to calculate sectionwise rank
+      //write logic to calculate secr
     })
   );
-  analyticsObj.testRank = await Report.countDocuments({
+  // Count the number of reports with more points or same points but earlier submission time
+  const count = await Report.countDocuments({
     test: analyticsObj.test,
-    points: { $gt: analyticsObj.points },
+    submitted: true,
+    $or: [
+      { points: { $gt: analyticsObj.points } },
+      {
+        points: analyticsObj.points,
+        end: { $lt: analyticsObj.end } // Assuming endTime is the submission time
+      }
+    ],
+  }).exec();
+
+  // Total number of submitted reports
+  const totalCount = await Report.countDocuments({
+    test: analyticsObj.test,
     submitted: true
   }).exec();
+
+  // Calculate the percentile
+  analyticsObj.percentile = ((totalCount - count - 1) / totalCount) * 100;
+
+  const topUsers = await User.find({
+    test: analyticsObj.test,
+    submitted: true,
+  }, "user points")
+    .sort({ points: -1 }) // Sort users in descending order of points
+    .limit(5) // Limit the results to the top 3 users
+    .populate({
+      path: 'user',
+    })
+    .exec();
+
+  analyticsObj.rank = topUsers;
+
   return analyticsObj;
 }
 
