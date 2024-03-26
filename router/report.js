@@ -230,7 +230,7 @@ async function getAnalytics(report) {
     test: analyticsObj.test,
     submitted: true,
   }, "user points end -_id")
-    .sort({ points: -1, end: -1 }) 
+    .sort({ points: -1, end: 1 }) 
     .limit(5) 
     .exec();
 
