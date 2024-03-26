@@ -200,8 +200,11 @@ async function getAnalytics(report) {
       //write logic to calculate sectionwise rank
     })
   );
-
-  //write logic to calculate rank in the test
+  analyticsObj.testRank = await Report.countDocuments({
+    test: analyticsObj.test,
+    points: { $gt: analyticsObj.points },
+    submitted: true
+  }).exec();
   return analyticsObj;
 }
 
