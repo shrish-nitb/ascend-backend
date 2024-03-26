@@ -238,6 +238,7 @@ async function getAnalytics(report) {
     const {name, picture} = await User.find({user: item.user}, "name picture -_id").exec();
     item.name = name;
     item.picture = picture;
+    return item;
   }))
 
   analyticsObj.leaderboard = topUsers;
