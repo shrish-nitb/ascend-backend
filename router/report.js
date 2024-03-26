@@ -216,13 +216,14 @@ async function getAnalytics(report) {
   }).exec();
 
   // Total number of submitted reports
-  const totalCount = await Report.countDocuments({
-    test: analyticsObj.test,
-    submitted: true
-  }).exec();
+  // const totalCount = await Report.countDocuments({
+  //   test: analyticsObj.test,
+  //   submitted: true
+  // }).exec();
 
   // Calculate the percentile
-  analyticsObj.percentile = ((totalCount - count - 1) / totalCount) * 100;
+  analyticsObj.rank = count + 1;
+  
 
   const topUsers = await Report.find({
     test: analyticsObj.test,
