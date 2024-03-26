@@ -230,9 +230,6 @@ async function getAnalytics(report) {
   }, "user points")
     .sort({ points: -1 }) // Sort users in descending order of points
     .limit(5) // Limit the results to the top 3 users
-    .populate({
-      path: 'user',
-    })
     .exec();
 
   analyticsObj.rank = topUsers;
