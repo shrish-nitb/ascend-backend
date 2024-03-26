@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 // type, enum ['SINGLE', 'NUMERICAL', 'SUBJECTIVE'], mandatory
 // options [{_id (object id, autofill), value (string)}...], default []
 // meta {difficulty:string, mandatory, topic:string, mandatory, subtopic:string, mandatory}
-// isPaid, boolean, mandatory
+// testOnly, boolean, mandatory
 
 // question uid (_id)
 // answer (string)
@@ -55,14 +55,14 @@ const questionSchema = new mongoose.Schema({
     },
     topic: {
       type: String,
-      default: "N/A",
+      default: "",
     },
     subtopic: {
       type: String,
-      default: "N/A",
+      default: "",
     },
   },
-  isPaid: {
+  testOnly: {
     type: Boolean,
     default: false,
   },

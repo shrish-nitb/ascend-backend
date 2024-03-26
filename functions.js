@@ -125,7 +125,7 @@ async function main() {
   //     topic: "Financial Analysis",
   //     subtopic: "Introduction",
   //   },
-  //   isPaid: false,
+  //   testOnly: false,
   // });
   // } catch (error) {
   //   console.error(error);

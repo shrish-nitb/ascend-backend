@@ -7,8 +7,8 @@ const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require
 router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
-    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false; //undefined (evaluates to if not found isPaid key instead of exception) || false
-    if(isPaid){
+    const testOnly = (await Question.findOne({_id: questionId.trim()}, "testOnly -_id").exec())?.testOnly || false; //undefined (evaluates to if not found testOnly key instead of exception) || false
+    if(testOnly){
       throw new Error("Test Only")
     }
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
@@ -57,7 +57,7 @@ router.post("/list", firebaseTokenVerifier, userAuthLookup, authorizationProvide
     if (difficulty != undefined) query["meta.tag"] = difficulty;
     if (topic != undefined) query["meta.topic"] = topic;
     if (subtopic != undefined) query["meta.subtopic"] = subtopic;
-    query.isPaid = false;
+    query.testOnly = false;
 
     console.log(query);
 
