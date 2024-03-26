@@ -237,14 +237,13 @@ async function getAnalytics(report) {
   topUsers = await Promise.all(topUsers.map(async (item) => {
     let newItem = item.toObject();;
     let userObj = await User.findOne({ uid: item.user }, "name picture -_id").exec();
-    console.log(userObj)
     if (userObj) {
       newItem.name = userObj.name;
       newItem.picture = userObj.picture;
     } else {
       console.log(`User not found for uid: ${item.user}`);
     }
-    console.log(newItem)
+    return newItem
   }));
 
   analyticsObj.leaderboard = topUsers;
