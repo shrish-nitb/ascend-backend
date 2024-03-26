@@ -7,7 +7,7 @@ const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require
 router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
-    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec()).isPaid || false;
+    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false;
     
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
     if (!answerDoc) {
