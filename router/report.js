@@ -232,10 +232,10 @@ async function getAnalytics(report) {
   }, "user points -_id")
     .sort({ points: -1 }) // Sort users in descending order of points
     .limit(5) // Limit the results to the top 3 users
-    .exec();
+    .exec().toObject();
 
   topUsers = await Promise.all(topUsers.map(async (item) => {
-    let newItem = item;
+    let newItem = item.toObject();;
     let userObj = await User.findOne({ uid: item.user }, "name picture -_id").exec();
     console.log(userObj)
     if (userObj) {
