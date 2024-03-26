@@ -12,7 +12,7 @@ router.get('/solve/:questionId/:markedValue', async (req, res) => {
     }
     const answer = answerDoc.answer;
     const correct = (answer.toString().trim() == markedValue.toString().trim());
-    return res.json({ correct });
+    return res.json({ correct, answer });
   } catch (error) {
     console.error('Error:', error.message);
     return res.status(500).json({ error: 'Internal Server Error' });
