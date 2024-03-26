@@ -6,7 +6,7 @@ const { Question, Answer } = require("../model/question");
 router.get('/solve/:questionId/:markedValue', async (req, res) => {
   try {
       const { questionId, markedValue } = req.params;
-      const answerDoc = await Answer.findOne({ _id: questionId }).exec();
+      const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
       if (!answerDoc) {
           return res.json({ match: false });
       }
