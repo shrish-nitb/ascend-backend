@@ -9,7 +9,7 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
     const { questionId, markedValue } = req.params;
     const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false;
     if(isPaid){
-      throw new Error("Testonly")
+      throw new Error("Test Only")
     }
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
     if (!answerDoc) {
@@ -20,7 +20,7 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
     return res.json({ correct, answer});
   } catch (error) {
     console.error('Error:', error.message);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: error.message });
   }
 });
 
