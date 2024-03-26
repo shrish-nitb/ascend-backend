@@ -8,11 +8,12 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
   try {
     const { questionId, markedValue } = req.params;
     const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec())?.isPaid || false;
-    
+    if(isPaid){
+      throw new Error("Testonly")
+    }
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
     if (!answerDoc) {
-      return res.json({ correct: false, isPaid});
-      // throw new Error("Answer not exist")
+      throw new Error("Answer not exist")
     }
     const answer = answerDoc.answer;
     const correct = (answer.toString().trim() == markedValue.toString().trim());
