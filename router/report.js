@@ -238,7 +238,7 @@ async function getAnalytics(report) {
     const {name, picture} = await User.find({user: item.user}, "name picture -_id").exec();
     item.name = name;
     item.picture = picture;
-    console.log(item)
+    console.log(name, picture)
     return item;
   }))
   console.log(modTop)
