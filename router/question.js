@@ -3,6 +3,23 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Question, Answer } = require("../model/question");
 
+router.get('/solve/:questionId/:markedValue', async (req, res) => {
+  try {
+      const { questionId, markedValue } = req.params;
+      const answerDoc = await Answer.findOne({ _id: questionId }).exec();
+      if (!answerDoc) {
+          return res.json({ match: false });
+      }
+      const answer = answerDoc.answer;
+      const match = (answer.toString().trim() == markedValue.toString().trim());
+      return res.json({ match });
+  } catch (error) {
+      console.error('Error:', error.message);
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 router.post("/list", async (req, res) => {
   try {
     const { id, type, difficulty, topic,subtopic } = req.body;
