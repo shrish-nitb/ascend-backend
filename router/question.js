@@ -7,15 +7,16 @@ const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require
 router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
-    const {isPaid} = await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec() || false;
+    const isPaid = (await Question.findOne({_id: questionId.trim()}, "isPaid -_id").exec()).isPaid || false;
     
     const answerDoc = await Answer.findOne({ _id: questionId.trim() }).exec();
     if (!answerDoc) {
-      return res.json({ correct: false, isPaid });
+      return res.json({ correct: false, isPaid});
+      // throw new Error("Answer not exist")
     }
     const answer = answerDoc.answer;
     const correct = (answer.toString().trim() == markedValue.toString().trim());
-    return res.json({ correct, answer, isPaid });
+    return res.json({ correct, answer});
   } catch (error) {
     console.error('Error:', error.message);
     return res.status(500).json({ error: 'Internal Server Error' });
