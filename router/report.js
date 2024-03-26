@@ -229,9 +229,9 @@ async function getAnalytics(report) {
   let topUsers = await Report.find({
     test: analyticsObj.test,
     submitted: true,
-  }, "user points -_id")
-    .sort({ points: -1 }) // Sort users in descending order of points
-    .limit(5) // Limit the results to the top 3 users
+  }, "user points end -_id")
+    .sort({ points: -1, end: -1 }) 
+    .limit(5) 
     .exec();
 
   await Promise.all(topUsers.map(async (item) => {
