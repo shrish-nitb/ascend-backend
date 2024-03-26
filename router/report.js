@@ -233,7 +233,7 @@ async function getAnalytics(report) {
     .limit(5) // Limit the results to the top 3 users
     .exec();
 
-  analyticsObj.rank = topUsers;
+  analyticsObj.leaderboard = topUsers;
 
   return analyticsObj;
 }
