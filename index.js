@@ -22,6 +22,7 @@ const plansRouter = require("./router/plan");
 const testRouter = require("./router/test");
 const reportRouter = require("./router/report");
 const questionRouter = require("./router/question");
+// const createTest = require("./scripts/create_test")
 
 
 app.use("/user", userRouter);
@@ -34,13 +35,13 @@ app.use("/question",questionRouter)
 
 
 connectDB()
-  .then(() => {
+  .then(async () => {
     app.listen(PORT, (req, res) => {
       console.log(
         `Successfully connected to the database and running on port ${PORT}`
       );
     });
-    // createTest();
+    // await createTest();
   })
   .catch((error) => {
     console.log(error);
