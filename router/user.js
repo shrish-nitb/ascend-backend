@@ -24,7 +24,7 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
       if(user.phone == 0){
         user = await addPhone(req.decodedToken, req.body.phone)
       } else if(user.phone != req.body.phone) {
-        throw new Error("Phone Number not exists")
+        throw new Error("Phone Number does not exists")
       }
     }
     res.status(200).json(user);
