@@ -13,7 +13,8 @@ async function firebaseTokenVerifier(req, res, next) {
             token = req.body.token;
         }
         decodedToken = await verifyToken(token);
-        req.decodedToken = decodedToken;
+        req.decodedToken = decodedToken; 
+        req.decodedToken.phone = req.body.phone;
         next();
     } catch (error) {
         res.status(401).json({ message: `Unauthorized, ${error}` });
