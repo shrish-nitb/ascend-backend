@@ -20,6 +20,12 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
     let user = await getUser(req.decodedToken.uid);
     if (!user) {
       user = await signup(req.decodedToken);
+    } else {
+      if(user.phone == 0){
+        user = await addPhone(req.decodedToken, req.body.phone)
+      } else if(user.phone != req.body.phone) {
+        throw new Error("Phone Number not exists")
+      }
     }
     res.status(200).json(user);
   } catch (error) {
@@ -28,6 +34,15 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
   }
 });
 
+async function addPhone(decodedToken, phoneNumber){
+  try {
+    const updatedUser = await User.findOneAndUpdate({uid: decodedToken.uid}, {phone: phoneNumber}, { new: true }).exec();
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function signup(decodedToken) {
   try {
     const newUser = await User.create({
@@ -35,6 +50,7 @@ async function signup(decodedToken) {
       name: decodedToken.name,
       email: decodedToken.email,
       picture: decodedToken.picture,
+      phone: decodedToken.phone,
     });
     return newUser;
   } catch (error) {

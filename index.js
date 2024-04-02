@@ -22,7 +22,7 @@ const plansRouter = require("./router/plan");
 const testRouter = require("./router/test");
 const reportRouter = require("./router/report");
 const questionRouter = require("./router/question");
-// const createTest = require("./scripts/create_test")
+const {createTest, checkAnswers, checkQuestions} = require("./scripts/create_test")
 
 
 app.use("/user", userRouter);

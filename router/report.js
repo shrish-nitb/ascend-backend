@@ -195,7 +195,6 @@ async function getAnalytics(report) {
     analyticsObj.sections.map(async (section) => {
       await Promise.all(
         section.questions.map(async (question) => {
-          console.log(question._id)
           let answerObj = await Answer.findOne({ _id: question._id });
           question.answer = answerObj.answer;
           question.solution = answerObj.solution;
