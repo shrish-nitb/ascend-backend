@@ -11,7 +11,7 @@ router.get("/", firebaseTokenVerifier, userAuthLookup, async (req, res) => {
     res.status(200).json(req.user);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -30,7 +30,7 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error);
+    res.status(400).json({ message: error.message });
   }
 });
 
