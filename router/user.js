@@ -28,8 +28,8 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
       }
     }
     res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
+  } catch (error) {  
+    console.error(error);   
     res.status(400).json({ message: error.message });
   }
 });
