@@ -1,0 +1,131 @@
+#Add new field "ROLE" in USER Model
+    #Default value USER
+    #Enum {USER, ADMIN}
+
+#ADMIN ONLY ROUTES
+    #API Endpoint for role modification
+        Bearer Token
+        PUT /user
+        I/P:
+        {
+            uid: userID,
+            role: Enum{USER, ADMIN},
+        }
+
+        O/P:
+        200
+        400
+        500
+
+    #Test Reattempt API Endpoint
+        Bearer Token
+        I/P:
+        DELETE /user/:uid/:mockid
+
+        O/P:
+        200 
+        400
+        500
+
+    #User Reports fetching Endpoint
+        Bearer Token
+        I/P:
+        GET /user/:uid
+
+        O/P:
+        {user:{
+            name:
+            uid:
+            email:
+            phone:
+            attempted:[id],
+            report:[{}]
+        }}
+
+    #User Table fetching API Endpoint  
+        Bearer Token
+        GET /users
+
+        O/P:
+        User Table
+
+    #Mock status modification Endpoint
+        Bearer Token
+        PUT /test/status/:mockid
+
+        O/P:
+        200
+        400
+        500
+
+    #Fetching test from testID
+        GET /plans/test/:testID
+
+        O/P:
+        Test Object
+        Populated with Questions and Answers/AnswerID**
+
+    #Question Update API Endpoint
+        PUT /question/update/:questionID
+
+        I/P:
+                {
+                    "_id": {
+                        *"meta": {
+                            "tag": "MEDIUM",
+                            "topic": "modern maths",
+                            "subtopic": "trigonometry"
+                        },
+                        "_id": "66047c57e3dc09d3365da708",
+                        *"directions": "Solve the following equation for x:",
+                        *"statement": " sin3x+3sin4x+sin5x=0.",
+                        *"media": "",
+                        "type": "SINGLE",
+                        *"options": [
+                            {
+                                "value": "xπ/4 ",
+                                "_id": "66047c57e3dc09d3365da709"
+                            },
+                            {
+                                "value": "xπ/2",
+                                "_id": "66047c57e3dc09d3365da70a"
+                            },
+                            {
+                                "value": "xπ/8",
+                                "_id": "66047c57e3dc09d3365da70b"
+                            },
+                            {
+                                "value": "xπ/16",
+                                "_id": "66047c57e3dc09d3365da70c"
+                            }
+                        ],
+                        "testOnly": true,
+                        "__v": 0
+                    },
+           
+                    "answer": "66047c57e3dc09d3365da709",
+                    *"solution": "https://res.cloudinary.com/dmtnkpsd0/image/upload/v1710569978/ycwglqlj3f1ziuu25fsl.png"
+                }
+
+        O/P:
+        200, 400, 500
+
+    #Test creation route 
+        POST /test/create
+
+        I/P:
+        Test Object
+
+        O/P:
+        200, 400, 500
+
+    
+
+    
+
+
+
+
+
+
+
