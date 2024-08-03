@@ -73,6 +73,11 @@ const userSchema = new mongoose.Schema({
     default: [],
     required: true,
   },
+  role: {
+    type: String,
+    enum: ['USER', 'ADMIN'],
+    default: 'USER'
+  }
 });
 
 const User = mongoose.model("User", userSchema);

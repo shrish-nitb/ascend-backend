@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const uri = process.env.DB_URL;
 const User = require("../model/user");
 const Plan = require('../model/plan');
+const Test = require('../model/test')
 const Order = require("../model/order");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
@@ -16,6 +17,7 @@ async function connectDB() {
   console.log("Pinged your deployment. You successfully connected to MongoDB!");
 }
 
+//user related db calls
 async function getUser(uid) {
   return User.findOne({ uid: uid }).populate({
     path: "plans.plan",
@@ -23,12 +25,35 @@ async function getUser(uid) {
   }).exec();
 }
 
+async function addPhone(decodedToken, phoneNumber) {
+  try {
+    const updatedUser = await User.findOneAndUpdate({ uid: decodedToken.uid }, { phone: phoneNumber }, { new: true }).exec();
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function signup(decodedToken) {
+  try {
+    const newUser = await User.create({
+      uid: decodedToken.uid,
+      name: decodedToken.name,
+      email: decodedToken.email,
+      picture: decodedToken.picture,
+      phone: decodedToken.phone,
+    });
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
+}
 
 //order and plan related db calls
 async function listPlans(planID) {
   try {
     return await Plan.find().populate('test', '-sections.questions -sections._id');
-  } catch(error){
+  } catch (error) {
     throw error
   }
 }
@@ -91,5 +116,87 @@ async function cancelOrder(transactionID, transactionData) {
 
 //test and report related db calls
 
+//admin panel calls
+async function reattempt(testID, userID) {
+  try {
+    await User.updateOne(
+      {
+        uid: userID,
+      },
+      {
+        $pull: { attemptedTest: { _id: testID } },
+      });
+  } catch (error) {
+    throw error;
+  }
+}
 
-module.exports = { connectDB, getUser };
+//fetching user reports along with data
+async function reportsAll(userID) {
+  try {
+    const user = await User.findOne({ uid: userID }, '-_id name uid email phone attemptedTest').exec();
+    const reportObj = user.toObject();
+    reportObj.reports = await Report.find({ user: userID }).exec();
+    console.log(reportObj);
+  } catch (error) {
+    throw error;
+  }
+}
+
+//fetching all users
+async function usersAll() {
+  try {
+    const users = await User.find({}, '-_id -__v').exec();
+    console.log(users);
+  } catch (error) {
+    throw error;
+  }
+}
+
+//fetching the test along with answers
+async function viewTest(testID) {
+  try {
+    let testObj = await Test.findOne({ _id: testID }).populate({
+      path: "sections.questions._id",
+    });
+    
+    testObj = testObj.toObject();
+    testObj.sections = await Promise.all(
+      testObj.sections.map(async (section) => {
+        let questionsObj = await Promise.all(
+          section.questions.map(async (question) => {
+            let answer = (
+              await Answer.find({ _id: question._id._id }).exec()
+            )[0].answer
+              .toString()
+              .trim();
+            question.answer = answer;
+            return question;
+          })
+        );
+        section.questions = questionsObj;
+        return section;
+      })
+    );
+    // console.log(testObj.sections[0].questions[5])
+  } catch (error) {
+    throw error;
+  }
+}
+
+//changing the uploaded question
+async function updateQuestion(){
+  
+}
+
+//creating new tests
+async function createTest(testObj) {
+  try {
+    await Test.create(testObj);
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+module.exports = { connectDB, getUser, addPhone, signup, reattempt, reportsAll, usersAll, viewTest, createTest };

@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../model/user");
-const { getUser } = require("../utils/database");
+const { getUser, addPhone, signup } = require("../utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
 
@@ -33,29 +32,5 @@ router.post("/", firebaseTokenVerifier, async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
-async function addPhone(decodedToken, phoneNumber){
-  try {
-    const updatedUser = await User.findOneAndUpdate({uid: decodedToken.uid}, {phone: phoneNumber}, { new: true }).exec();
-    return updatedUser;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function signup(decodedToken) {
-  try {
-    const newUser = await User.create({
-      uid: decodedToken.uid,
-      name: decodedToken.name,
-      email: decodedToken.email,
-      picture: decodedToken.picture,
-      phone: decodedToken.phone,
-    });
-    return newUser;
-  } catch (error) {
-    throw error;
-  }
-}
 
 module.exports = router;

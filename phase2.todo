@@ -20,7 +20,7 @@
     #Test Reattempt API Endpoint
         Bearer Token
         I/P:
-        DELETE /user/:uid/:mockid
+        PATCH /reattempt/:uid/:mockid
 
         O/P:
         200 

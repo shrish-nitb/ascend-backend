@@ -16,6 +16,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 const PORT = process.env.PORT;
 
 const userRouter = require("./router/user");
+const adminRouter = require("./router/admin");
 const ordersRouter = require("./router/order");
 const plansRouter = require("./router/plan");
 const testRouter = require("./router/test");
@@ -24,9 +25,11 @@ const questionRouter = require("./router/question");
 
 const {createTest, checkAnswers, checkQuestions, createVa} = require("./scripts/create_test")
 const {grantAccess} = require("./scripts/user_scripts")
+const {reportsAll, usersAll, viewTest} = require("./utils/database")
 
 
 app.use("/user", userRouter);
+// app.use("/admin", adminRouter);
 app.use("/orders", ordersRouter);
 app.use("/plans", plansRouter);
 app.use("/test", testRouter);
@@ -41,18 +44,10 @@ connectDB()
       console.log(
         `Successfully connected to the database and running on port ${PORT}`
       );
+      // reportsAll("QkgZx38mqVMO7Ug2n30xQSNlJGJ3")
+      // usersAll()
+      viewTest("6605a9d74b793730ccf6a363")
     });
-    // await checkAnswers();
-    // await createVa();
-    // await createTest();
-    // let emails = [
-    //   "varunjadhav0496@gmail.com",
-
-    // ]
-    // for(email of emails){
-    //   await grantAccess(email)
-    // }
-    
   })
   .catch((error) => {
     console.log(error);
