@@ -3,7 +3,7 @@ const uri = process.env.DB_URL;
 const User = require("../model/user");
 const Plan = require('../model/plan');
 const Test = require('../model/test');
-const Algo = require("../model/algorithm");
+const {Algo, Topic} = require("../model/algorithm");
 const Order = require("../model/order");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
@@ -266,8 +266,65 @@ async function removeAlgoTopic(algId, tpcId) {
   }
 }
 
+//CRUD functionality for Topics
+
+//Inserting a new Topic
+async function createTopic(tpcObj) {
+  try {
+    await Topic.create(tpcObj);
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Deleting existing Topic
+async function removeTopic(tpcId) {
+  try {
+    const doc = await Topic.findByIdAndDelete(tpcId);
+    if (!doc) {
+      throw new Error("No document found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Update existing Topic Name
+async function updateTopicName(tpcId, newName) {
+  try {
+    const doc = await Topic.findByIdAndUpdate(tpcId, { name: newName })
+    if (!doc) {
+      throw new Error("No document found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Add Subtopic to Topic
+async function addSubtopics(tpcId, list) {
+  try {
+    const doc = await Topic.findByIdAndUpdate(tpcId, { $push: { subtopic: list } })
+    if (!doc) {
+      throw new Error("Not found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Remove Subtopic from Topic
+async function removeSubtopic(tpcId, subtopic) {
+  try {
+    const doc = await Topic.findByIdAndUpdate(tpcId, { $pull: { subtopic: subtopic }})
+    if (!doc) {
+      throw new Error("Not found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
 
 
 
-
-module.exports = { connectDB, getUser, addPhone, signup, reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo };
+module.exports = { connectDB, getUser, addPhone, signup, reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, updateTopicName, addSubtopics, removeSubtopic};

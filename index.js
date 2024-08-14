@@ -25,7 +25,9 @@ const questionRouter = require("./router/question");
 
 const {createTest, checkAnswers, checkQuestions, createVa} = require("./scripts/create_test")
 const {grantAccess} = require("./scripts/user_scripts")
-const {reportsAll, usersAll, viewTest} = require("./utils/database")
+
+
+const {reportsAll, usersAll, viewTest, createTopic, addSubtopics, removeSubtopic, updateTopicName} = require("./utils/database")
 
 
 app.use("/user", userRouter);
@@ -46,7 +48,16 @@ connectDB()
       );
       // reportsAll("QkgZx38mqVMO7Ug2n30xQSNlJGJ3")
       // usersAll()
-      viewTest("6605a9d74b793730ccf6a363")
+      // viewTest("6605a9d74b793730ccf6a363")
+      // createTopic({
+      //   name: "Topic Name",
+      //   subtopic: ["Subtopic 1", "Subtopic 2"]
+      // })
+      // addSubtopic("66bc8801a66e62fdc917980c", ["Subtopic 4", "Subtopic 5"])
+      // updateTopicName("66bc8801a66e62fdc917980c", "Updated Name")
+      // removeSubtopic("66bc8801a66e62fdc917980c", "Subtopic 5")
+
+
     });
   })
   .catch((error) => {
