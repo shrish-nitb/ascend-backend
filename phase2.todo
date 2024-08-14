@@ -1,9 +1,11 @@
 #Add new field "ROLE" in USER Model
+DONE
     #Default value USER
     #Enum {USER, ADMIN}
 
 #ADMIN ONLY ROUTES
     #API Endpoint for role modification
+    PENDING
         Bearer Token
         PUT /user
         I/P:
@@ -18,6 +20,7 @@
         500
 
     #Test Reattempt API Endpoint
+    DONE
         Bearer Token
         I/P:
         PATCH /reattempt/:uid/:mockid
@@ -28,6 +31,7 @@
         500
 
     #User Reports fetching Endpoint
+    DONE
         Bearer Token
         I/P:
         GET /user/:uid
@@ -43,6 +47,7 @@
         }}
 
     #User Table fetching API Endpoint  
+    DONE
         Bearer Token
         GET /users
 
@@ -50,6 +55,7 @@
         User Table
 
     #Mock status modification Endpoint
+    PENDING
         Bearer Token
         PUT /test/status/:mockid
 
@@ -59,6 +65,7 @@
         500
 
     #Fetching test from testID
+    DONE
         GET /plans/test/:testID
 
         O/P:
@@ -66,6 +73,7 @@
         Populated with Questions and Answers/AnswerID**
 
     #Question Update API Endpoint
+    PENDING
         PUT /question/update/:questionID
 
         I/P:
@@ -111,6 +119,7 @@
         200, 400, 500
 
     #Test creation route 
+    DONE
         POST /test/create
 
         I/P:
@@ -119,7 +128,39 @@
         O/P:
         200, 400, 500
 
-    
+------------------------------------------------------
+
+#Add new field "SUBPLAN" in PLAN Model
+#Add new field "Features" in PLAN Model
+
+    #Route for plan creation    
+    {
+        id
+        name
+        description
+        features [string]
+        price (rupees)
+        validity (days)
+        subplan [planid]
+        test [testid]
+        algo []
+    }
+
+algorithm.js
+{
+    algoid
+    name eg. Verbal Ability
+    topics [{
+        topicid
+        name
+        subtopic [string]
+    }]
+}
+
+CRUD for Algo
+
+
+
 
     
 

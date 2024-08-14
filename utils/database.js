@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const uri = process.env.DB_URL;
 const User = require("../model/user");
 const Plan = require('../model/plan');
-const Test = require('../model/test')
+const Test = require('../model/test');
+const Algo = require("../model/algorithm");
 const Order = require("../model/order");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
@@ -159,7 +160,7 @@ async function viewTest(testID) {
     let testObj = await Test.findOne({ _id: testID }).populate({
       path: "sections.questions._id",
     });
-    
+
     testObj = testObj.toObject();
     testObj.sections = await Promise.all(
       testObj.sections.map(async (section) => {
@@ -185,8 +186,8 @@ async function viewTest(testID) {
 }
 
 //changing the uploaded question
-async function updateQuestion(){
-  
+async function updateQuestion() {
+
 }
 
 //creating new tests
@@ -198,5 +199,75 @@ async function createTest(testObj) {
   }
 }
 
+//CRUD functionality for Algo
 
-module.exports = { connectDB, getUser, addPhone, signup, reattempt, reportsAll, usersAll, viewTest, createTest };
+//Inserting a new Alog
+async function createAlgo(algObj) {
+  try {
+    await Algo.create(algObj);
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Deleting existing Algo
+async function removeAlgo(algId) {
+  try {
+    const doc = await Algo.findByIdAndDelete(algId);
+    if (!doc) {
+      throw new Error("No document found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Update existing Algo Name
+async function updateAlgoName(algId, newName) {
+  try {
+    const doc = await Algo.findByIdAndUpdate(algId, { name: newName })
+    if (!doc) {
+      throw new Error("No document found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Add existing Topic to Algo 
+async function addAlgoTopic(algId, tpcId) {
+  try {
+    const tpc = await Topic.findById(tpcId)
+    if (!tpc) {
+      throw new Error("No topic found with that ID");
+    }
+    const doc = await Algo.findByIdAndUpdate(algId, { $push: { topics: tpcId } })
+    if (!doc) {
+      throw new Error("No Algo found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Remove existing Topic from Algo
+async function removeAlgoTopic(algId, tpcId) {
+  try {
+    const tpc = await Topic.findById(tpcId)
+    if (!tpc) {
+      throw new Error("No topic found with that ID");
+    }
+    const doc = await Algo.findByIdAndUpdate(algId, { $pop: { topics: tpcId } })
+    if (!doc) {
+      throw new Error("No Algo found with that ID");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+
+
+module.exports = { connectDB, getUser, addPhone, signup, reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo };
