@@ -23,7 +23,6 @@ const algoSchema = new mongoose.Schema({
     topics: {
         type: [mongoose.Types.ObjectId],
         ref: "Topic",
-        required: true,
     },
 });
 

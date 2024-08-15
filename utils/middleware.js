@@ -33,6 +33,17 @@ async function userAuthLookup(req, res, next) {
     }
 }
 
+async function adminAuthorization(req, res, next) {
+    try {
+        if(req.user.role != "ADMIN"){
+            throw new Error("Insufficient Privilage.")
+        }
+        next();
+    } catch (error) {
+        res.status(401).json({ message: `Unauthorized, ${error}` });
+    }
+}
+
 function authorizationProvider(service) {
     return async function (req, res, next) {
         try {

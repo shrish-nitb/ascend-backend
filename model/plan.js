@@ -19,6 +19,14 @@ const planSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  features: {
+    type: [String],
+    default: [],
+  },
+  subplans: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
   price: {
     type: Number, //paise
     required: true,
@@ -32,9 +40,10 @@ const planSchema = new mongoose.Schema({
     ref: "Test",
     default: [],
   },
-  practice: {
-    type: Boolean,
-    default: false,
+  algo: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Algo",
+    default: [],
   },
   media: {
     type: [String],
