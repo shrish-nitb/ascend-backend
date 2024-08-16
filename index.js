@@ -22,7 +22,7 @@ async function main() {
   app.use(bodyParser.json({ limit: '50mb' }));
 
   app.use("/user", userRouter);
-  // app.use("/admin", adminRouter);
+  app.use("/admin", adminRouter);
   app.use("/orders", ordersRouter);
   app.use("/plans", plansRouter);
   app.use("/test", testRouter);
@@ -39,6 +39,19 @@ async function main() {
   } catch (error) {
     console.log(error);
   }
+
+   const { reportsAll, usersAll, reattempt, viewTest, createTest, createTopic, addSubtopics, removeSubtopic, updateTopicName, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, addPlan, updatePlan } = require("./utils/database")
+  
+  //  console.log(await reattempt("66105e2f45d923185758ec96", "j57M5q2Iwvfg1cMdc4rl3r04oyH3"))
+  //  console.log(await reportsAll("j57M5q2Iwvfg1cMdc4rl3r04oyH3"))
+  // viewTest("6605a9d74b793730ccf6a363")
+
+  // try{
+  //   await createTest("65f5d06d896356522d087e8b", {})
+  // } catch(error){
+  //   console.log(error.message);
+  // }
+
 }
 
 main()

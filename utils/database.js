@@ -101,56 +101,76 @@ async function cancelOrder(transactionID, transactionData) {
 
 //test and report related db calls
 
-//admin panel calls (USED)
+//admin panel calls follows (In use)
 
+//All dashboard calls starts
+//fetching all users
+async function usersAll() {
+  const users = await User.find({}, 'uid name email phone role').exec();
+  return users
+}
+//change role of any user
+async function changeRole(userID, role) {
+  if (!["USER", "ADMIN"].includes(role)) {
+    throw new Error("Please provide a valid role.")
+  }
+  const doc = await User.findByIdAndUpdate(userID, { role: role }).exec();
+  if (!doc) {
+    throw new Error("User not found")
+  }
+  return true
+}
+//fetching user reports along with data
+async function reportsAll(userID) {
+  const user = await User.findOne({ uid: userID }, '-_id -bio -__v -plans._id').populate("plans.plan", "name").exec();
+  if (!user) {
+    throw new Error("User not found")
+  }
+  const reportObj = user.toObject();
+  reportObj.reports = await Report.find({ user: userID }, "_id test points positives negatives submitted start end").populate("test", "name").exec();
+  return reportObj;
+}
 //allow userID to reattempt testID
 async function reattempt(testID, userID) {
-
-  await User.updateOne(
+  const user = await User.updateOne(
     {
       uid: userID,
     },
     {
       $pull: { attemptedTest: { _id: testID } },
-    });
-
+    }).exec();
+  if (user.matchedCount == 0) {
+    throw new Error("User not found");
+  }
+  const report = await Report.findOneAndDelete(
+    {
+      user: userID,
+      test: testID,
+    }).exec();
+  if (!report) {
+    throw new Error("Report not found");
+  }
+  return true;
 }
+//All Dashboard calls ends
 
-//fetching user reports along with data
-async function reportsAll(userID) {
-
-  const user = await User.findOne({ uid: userID }, '-_id name uid email phone attemptedTest').exec();
-  const reportObj = user.toObject();
-  reportObj.reports = await Report.find({ user: userID }).exec();
-
-
-}
-
-//fetching all users
-async function usersAll() {
-
-  const users = await User.find({}, '-_id -__v').exec();
-
-}
-
-//fetching the test along with answers
+//All plan calls starts
+//fetching the test along with answers and solutions
 async function viewTest(testID) {
-
   let testObj = await Test.findOne({ _id: testID }).populate({
     path: "sections.questions._id",
   });
-
+  if (!testObj) {
+    throw new Error("No test found")
+  }
   testObj = testObj.toObject();
   testObj.sections = await Promise.all(
     testObj.sections.map(async (section) => {
       let questionsObj = await Promise.all(
         section.questions.map(async (question) => {
-          let answer = (
-            await Answer.find({ _id: question._id._id }).exec()
-          )[0].answer
-            .toString()
-            .trim();
+          let { answer, solution } = await Answer.findOne({ _id: question._id._id }).exec();
           question.answer = answer;
+          question.solution = solution;
           return question;
         })
       );
@@ -158,7 +178,7 @@ async function viewTest(testID) {
       return section;
     })
   );
-
+  return testObj;
 }
 
 //changing the uploaded question
@@ -166,11 +186,15 @@ async function updateQuestion() {
 
 }
 
-//creating new tests
-async function createTest(testObj) {
-
-  await Test.create(testObj);
-
+//creating new test in a plan
+async function createTest(planID, testObj) {
+    const plan = await Plan.findById(planID).exec()
+    if(!plan){
+      throw new Error("Plan not exist")
+    }
+    const test = await Test.create(testObj);
+    const doc = await Plan.findByIdAndUpdate(planID, { $push: { test: test._id } }).exec()
+    return true
 }
 
 //CRUD functionality for Algo
@@ -317,7 +341,6 @@ async function updatePlan(planId, planObj) {
 
 //Add Remove test, algo, subplan
 async function addPlanTest(planId, testId) {
-
   const test = await Test.findById(testId)
   if (!test) {
     throw new Error("No Test found with that ID");
@@ -330,7 +353,7 @@ async function addPlanTest(planId, testId) {
   if (!doc) {
     throw new Error("No Plan found with that ID");
   }
-
+  return true
 }
 
 async function addPlanAlgo(planId, algoId) {
@@ -395,8 +418,10 @@ async function removeSubplan(mainPlanId, subPlanId) {
 
 }
 
-module.exports = { connectDB, getUser, addPhone, signup, 
-  reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan};
+module.exports = {
+  connectDB, getUser, addPhone, signup,
+  reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
+};
 
   //DONE
   //reattempt - grant a test access again to any user
