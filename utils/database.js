@@ -110,15 +110,15 @@ async function usersAll() {
   return users
 }
 //change role of any user
-async function changeRole(userID, role) {
+async function changeRole(uid, role) {
   if (!["USER", "ADMIN"].includes(role)) {
     throw new Error("Please provide a valid role.")
   }
-  const doc = await User.findByIdAndUpdate(userID, { role: role }).exec();
+  const doc = await User.findOneAndUpdate({uid: uid}, { role: role }, {new: true}).exec();
   if (!doc) {
     throw new Error("User not found")
   }
-  return true
+  return {name: doc.name, role: doc.role}
 }
 //fetching user reports along with data
 async function reportsAll(userID) {
@@ -148,7 +148,7 @@ async function reattempt(testID, userID) {
       test: testID,
     }).exec();
   if (!report) {
-    throw new Error("Report not found");
+    throw new Error("Test not found");
   }
   return true;
 }
@@ -420,7 +420,7 @@ async function removeSubplan(mainPlanId, subPlanId) {
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
+  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
 };
 
   //DONE
