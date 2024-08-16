@@ -114,11 +114,11 @@ async function changeRole(uid, role) {
   if (!["USER", "ADMIN"].includes(role)) {
     throw new Error("Please provide a valid role.")
   }
-  const doc = await User.findOneAndUpdate({uid: uid}, { role: role }, {new: true}).exec();
+  const doc = await User.findOneAndUpdate({ uid: uid }, { role: role }, { new: true }).exec();
   if (!doc) {
     throw new Error("User not found")
   }
-  return {name: doc.name, role: doc.role}
+  return { name: doc.name, role: doc.role }
 }
 //fetching user reports along with data
 async function reportsAll(userID) {
@@ -181,125 +181,19 @@ async function viewTest(testID) {
   return testObj;
 }
 
-//changing the uploaded question
-async function updateQuestion() {
-
-}
-
 //creating new test in a plan
 async function createTest(planID, testObj) {
-    const plan = await Plan.findById(planID).exec()
-    if(!plan){
-      throw new Error("Plan not exist")
-    }
-    const test = await Test.create(testObj);
-    const doc = await Plan.findByIdAndUpdate(planID, { $push: { test: test._id } }).exec()
-    return true
+  const plan = await Plan.findById(planID).exec()
+  if (!plan) {
+    throw new Error("Plan not exist")
+  }
+  const test = await Test.create(testObj);
+  const doc = await Plan.findByIdAndUpdate(planID, { $push: { test: test._id } }).exec()
+  return test._id
 }
 
-//CRUD functionality for Algo
-
-//Inserting a new Alog
-async function createAlgo(algObj) {
-
-  await Algo.create(algObj);
-
-}
-
-//Deleting existing Algo
-async function removeAlgo(algId) {
-
-  const doc = await Algo.findByIdAndDelete(algId);
-  if (!doc) {
-    throw new Error("No document found with that ID");
-  }
-
-}
-
-//Update existing Algo Name
-async function updateAlgoName(algId, newName) {
-
-  const doc = await Algo.findByIdAndUpdate(algId, { name: newName })
-  if (!doc) {
-    throw new Error("No document found with that ID");
-  }
-
-}
-
-//Add existing Topic to Algo 
-async function addAlgoTopic(algId, tpcId) {
-
-  const tpc = await Topic.findById(tpcId)
-  if (!tpc) {
-    throw new Error("No topic found with that ID");
-  }
-  const isExist = (await Algo.findById(algId, "-_id topics")).topics.includes(tpcId);
-  if (isExist) {
-    throw new Error("Entry already exists")
-  }
-  const doc = await Algo.findByIdAndUpdate(algId, { $push: { topics: tpcId } })
-  if (!doc) {
-    throw new Error("No Algo found with that ID");
-  }
-
-}
-
-//Remove existing Topic from Algo
-async function removeAlgoTopic(algId, tpcId) {
-
-  const doc = await Algo.findByIdAndUpdate(algId, { $pull: { topics: tpcId } })
-  if (!doc) {
-    throw new Error("No Algo found with that ID");
-  }
-
-}
-
-//CRUD functionality for Topics
-
-//Inserting a new Topic
-async function createTopic(tpcObj) {
-
-  await Topic.create(tpcObj);
-
-}
-
-//Deleting existing Topic
-async function removeTopic(tpcId) {
-
-  const doc = await Topic.findByIdAndDelete(tpcId);
-  if (!doc) {
-    throw new Error("No document found with that ID");
-  }
-
-}
-
-//Update existing Topic Name
-async function updateTopicName(tpcId, newName) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { name: newName })
-  if (!doc) {
-    throw new Error("No document found with that ID");
-  }
-
-}
-
-//Add Subtopic to Topic
-async function addSubtopics(tpcId, list) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { $push: { subtopic: list } })
-  if (!doc) {
-    throw new Error("Not found with that ID");
-  }
-
-}
-
-//Remove Subtopic from Topic
-async function removeSubtopic(tpcId, subtopic) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { $pull: { subtopic: subtopic } })
-  if (!doc) {
-    throw new Error("Not found with that ID");
-  }
+//changing the uploaded question
+async function updateQuestion(questionId, questionObj) {
 
 }
 
@@ -418,9 +312,116 @@ async function removeSubplan(mainPlanId, subPlanId) {
 
 }
 
+//CRUD functionality for Algo
+
+//Inserting a new Alog
+async function createAlgo(algObj) {
+
+  await Algo.create(algObj);
+
+}
+
+//Deleting existing Algo
+async function removeAlgo(algId) {
+
+  const doc = await Algo.findByIdAndDelete(algId);
+  if (!doc) {
+    throw new Error("No document found with that ID");
+  }
+
+}
+
+//Update existing Algo Name
+async function updateAlgoName(algId, newName) {
+
+  const doc = await Algo.findByIdAndUpdate(algId, { name: newName })
+  if (!doc) {
+    throw new Error("No document found with that ID");
+  }
+
+}
+
+//Add existing Topic to Algo 
+async function addAlgoTopic(algId, tpcId) {
+
+  const tpc = await Topic.findById(tpcId)
+  if (!tpc) {
+    throw new Error("No topic found with that ID");
+  }
+  const isExist = (await Algo.findById(algId, "-_id topics")).topics.includes(tpcId);
+  if (isExist) {
+    throw new Error("Entry already exists")
+  }
+  const doc = await Algo.findByIdAndUpdate(algId, { $push: { topics: tpcId } })
+  if (!doc) {
+    throw new Error("No Algo found with that ID");
+  }
+
+}
+
+//Remove existing Topic from Algo
+async function removeAlgoTopic(algId, tpcId) {
+
+  const doc = await Algo.findByIdAndUpdate(algId, { $pull: { topics: tpcId } })
+  if (!doc) {
+    throw new Error("No Algo found with that ID");
+  }
+
+}
+
+//CRUD functionality for Topics
+
+//Inserting a new Topic
+async function createTopic(tpcObj) {
+
+  await Topic.create(tpcObj);
+
+}
+
+//Deleting existing Topic
+async function removeTopic(tpcId) {
+
+  const doc = await Topic.findByIdAndDelete(tpcId);
+  if (!doc) {
+    throw new Error("No document found with that ID");
+  }
+
+}
+
+//Update existing Topic Name
+async function updateTopicName(tpcId, newName) {
+
+  const doc = await Topic.findByIdAndUpdate(tpcId, { name: newName })
+  if (!doc) {
+    throw new Error("No document found with that ID");
+  }
+
+}
+
+//Add Subtopic to Topic
+async function addSubtopics(tpcId, list) {
+
+  const doc = await Topic.findByIdAndUpdate(tpcId, { $push: { subtopic: list } })
+  if (!doc) {
+    throw new Error("Not found with that ID");
+  }
+
+}
+
+//Remove Subtopic from Topic
+async function removeSubtopic(tpcId, subtopic) {
+
+  const doc = await Topic.findByIdAndUpdate(tpcId, { $pull: { subtopic: subtopic } })
+  if (!doc) {
+    throw new Error("Not found with that ID");
+  }
+
+}
+
+
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
+  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
 };
 
   //DONE

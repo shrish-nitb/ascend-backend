@@ -1,17 +1,9 @@
 const express = require("express");
 const { replaceOne } = require("../model/report");
 const router = express.Router();
-const { usersAll, reportsAll, changeRole, reattempt, viewTest } = require("../utils/database");
+const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion } = require("../utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
-
-router.patch("reattempt/:uid/:mockid", async (req, res) => {
-    try {
-
-    } catch (error) {
-
-    }
-});
 
 router.get("/users", async (req, res) => {
     try {
@@ -66,6 +58,36 @@ router.get("/test/:testId", async (req, res) => {
     try {
         const test = await viewTest(req.params.testId);
         res.status(200).json({ test: test });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.post("/mock", async (req, res) => {
+    try {
+        const {planId, testObj} = req.body;
+        const testId = await createTest(planId, testObj)
+        if(testId){
+            res.status(200).json({ testId: testId, message: "Test created Successfully"});
+        } else {
+            res.status(500).json({ message: "Some unknown error occured" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.patch("/question/:questionId", async (req, res) => {
+    try {
+        // const {  } = req.body;
+        // const questionId = req.params.questionId;
+        // const newData = await updateQuestion(questionId, role);
+        // if (newData) {
+        //     res.status(200).json(newData)
+        // } else {
+        //     throw new Error("Some unknown error occured")
+        // }
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

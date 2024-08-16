@@ -41,6 +41,7 @@ async function main() {
   }
 
    const { reportsAll, usersAll, reattempt, viewTest, createTest, createTopic, addSubtopics, removeSubtopic, updateTopicName, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, addPlan, updatePlan } = require("./utils/database")
+
   
   //  console.log(await reattempt("66105e2f45d923185758ec96", "j57M5q2Iwvfg1cMdc4rl3r04oyH3"))
   //  console.log(await reportsAll("j57M5q2Iwvfg1cMdc4rl3r04oyH3"))
