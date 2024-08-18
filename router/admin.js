@@ -1,7 +1,7 @@
 const express = require("express");
 const { replaceOne } = require("../model/report");
 const router = express.Router();
-const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion } = require("../utils/database");
+const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan } = require("../utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
 
@@ -88,6 +88,49 @@ router.patch("/question/:questionId", async (req, res) => {
         //     throw new Error("Some unknown error occured")
         // }
 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.post("/plan", async (req, res) => {
+    try {
+        const planData = req.body.plan;
+        const plan = await createPlan(planData);
+        if(plan){
+            res.status(200).json({message: "Plan made successfully"});
+        } else {
+            throw new Error("Some unknown error occured"); 
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.delete("/plan/:planId", async (req, res) => {
+    try {
+        const {planId} = req.params;
+        const isRemoved = await removePlan(planId);
+        if(isRemoved){
+            res.status(200).json({message: "Plan removed successfully"});
+        } else {
+            throw new Error("Some unknown error occured"); 
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.put("/plan/:planId", async (req, res) => {
+    try {
+        const {planId} = req.params;
+        const planData = req.body.plan;
+        const plan = await updatePlan(planId, planData);
+        if(plan){
+            res.status(200).json({message: "Plan updated successfully"});
+        } else {
+            throw new Error("Some unknown error occured"); 
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

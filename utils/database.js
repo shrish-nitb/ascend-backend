@@ -201,19 +201,17 @@ async function updateQuestion(questionId, questionObj) {
 
 //Add Plan
 async function createPlan(planObj) {
-
   const plan = Plan.create(planObj)
-
+  return plan
 }
 
 //Deleting existing Plan
 async function removePlan(planId) {
-
-  const doc = await Topic.findByIdAndDelete(planId);
+  const doc = await Plan.findByIdAndDelete(planId);
   if (!doc) {
-    throw new Error("No document found with that ID");
+    throw new Error("No plan found");
   }
-
+  return true
 }
 
 //Update Plan
@@ -223,14 +221,29 @@ async function removePlan(planId) {
 //   features
 //   price
 //   validity
+//   test []
+//   algo []
+//   media []
 // }
 async function updatePlan(planId, planObj) {
-
+  for(item of planObj.test){
+    const test = await Test.findById(item)
+    if (!test) {
+      throw new Error("No Test found with that ID, Updation Failed.");
+    }
+  }
+  for(item of planObj.algo){
+    console.log(item)
+    const algo = await Algo.findById(item)
+    if (!algo) {
+      throw new Error("No Algo found with that ID, Updation Failed.");
+    }
+  }
   const doc = await Plan.findByIdAndUpdate(planId, planObj);
   if (!doc) {
-    throw new Error("Not found with that ID");
+    throw new Error("Plan not found");
   }
-
+  return true
 }
 
 //Add Remove test, algo, subplan
