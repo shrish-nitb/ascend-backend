@@ -253,7 +253,7 @@ async function updateQuestion(questionId, questionObj){
         if (answer < questionObj.options.length && answer > -1) {
           answerUpdate = await Answer.updateOne(
           {
-            _id: questionObj._id
+            _id: questionId
           },
           {
             answer: new mongoose.Types.ObjectId(questionObj.options[answer]._id),
@@ -265,7 +265,7 @@ async function updateQuestion(questionId, questionObj){
       default: {
         answerUpdate = await Answer.updateOne(
         { 
-          _id: questionObj._id
+          _id: questionId
         }, 
         {
           answer: answer, 
