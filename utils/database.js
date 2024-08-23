@@ -192,11 +192,6 @@ async function createTest(planID, testObj) {
   return test._id
 }
 
-//changing the uploaded question
-async function updateQuestion(questionId, questionObj) {
-
-}
-
 //CRUD functionality for Plans
 
 //Add Plan
@@ -207,6 +202,7 @@ async function createPlan(planObj) {
 
 //Deleting existing Plan
 async function removePlan(planId) {
+  await User.updateMany({"plans.plan": planId}, {$pull : {plans : {plan: planId}}})
   const doc = await Plan.findByIdAndDelete(planId);
   if (!doc) {
     throw new Error("No plan found");
@@ -226,13 +222,13 @@ async function removePlan(planId) {
 //   media []
 // }
 async function updatePlan(planId, planObj) {
-  for(item of planObj.test){
+  for (item of planObj.test) {
     const test = await Test.findById(item)
     if (!test) {
       throw new Error("No Test found with that ID, Updation Failed.");
     }
   }
-  for(item of planObj.algo){
+  for (item of planObj.algo) {
     console.log(item)
     const algo = await Algo.findById(item)
     if (!algo) {
@@ -241,45 +237,50 @@ async function updatePlan(planId, planObj) {
   }
   const doc = await Plan.findByIdAndUpdate(planId, planObj);
   if (!doc) {
-    throw new Error("Plan not found");
+    throw new Error("Plan not found, Updation Failed.");
   }
   return true
+}
+
+async function updateQuestion(questionId, questionObj){
+  try {
+    const {answer, solution, ...q} = questionObj
+    //question obj is same as what we store in DB
+    //it must have the type information
+    const questionUpdate = await Question.updateOne({_id: questionId}, q)
+    switch (questionObj.type) {
+      case "SINGLE": {
+        if (answer < questionObj.options.length && answer > -1) {
+          answerUpdate = await Answer.updateOne(
+          {
+            _id: questionObj._id
+          },
+          {
+            answer: new mongoose.Types.ObjectId(questionObj.options[answer]._id),
+            solution: solution,
+          });
+        }
+        break
+      }
+      default: {
+        answerUpdate = await Answer.updateOne(
+        { 
+          _id: questionObj._id
+        }, 
+        {
+          answer: answer, 
+          solution: solution, 
+        });
+        break
+      }
+    }
+    return true
+  } catch (error) {
+    throw error;
+  }
 }
 
 //Add Remove test, algo, subplan
-async function addPlanTest(planId, testId) {
-  const test = await Test.findById(testId)
-  if (!test) {
-    throw new Error("No Test found with that ID");
-  }
-  const isExist = (await Plan.findById(planId, "-_id test")).test.includes(testId);
-  if (isExist) {
-    throw new Error("Entry already exists")
-  }
-  const doc = await Plan.findByIdAndUpdate(planId, { $push: { test: testId } })
-  if (!doc) {
-    throw new Error("No Plan found with that ID");
-  }
-  return true
-}
-
-async function addPlanAlgo(planId, algoId) {
-
-  const algo = await Algo.findById(algoId)
-  if (!algo) {
-    throw new Error("No Algo found with that ID");
-  }
-  const isExist = (await Plan.findById(planId, "-_id algo")).algo.includes(algoId);
-  if (isExist) {
-    throw new Error("Entry already exists")
-  }
-  const doc = await Plan.findByIdAndUpdate(planId, { $push: { algo: algoId } })
-  if (!doc) {
-    throw new Error("No Plan found with that ID");
-  }
-
-}
-
 async function addSubplan(mainPlanId, subPlanId) {
 
   const subplan = await Plan.findById(subPlanId)
@@ -298,24 +299,6 @@ async function addSubplan(mainPlanId, subPlanId) {
 }
 
 //remove test, algo subplan
-async function removePlanTest(planId, testId) {
-
-  const doc = await Plan.findByIdAndUpdate(planId, { $pull: { test: testId } })
-  if (!doc) {
-    throw new Error("No Plan found with that ID");
-  }
-
-}
-
-async function removePlanAlgo(planId, algoId) {
-
-  const doc = await Plan.findByIdAndUpdate(planId, { $pull: { algo: algoId } })
-  if (!doc) {
-    throw new Error("No Plan found with that ID");
-  }
-
-}
-
 async function removeSubplan(mainPlanId, subPlanId) {
 
   const doc = await Plan.findByIdAndUpdate(planId, { $pull: { subplans: subPlanId } })
@@ -434,7 +417,7 @@ async function removeSubtopic(tpcId, subtopic) {
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addPlanTest, addPlanAlgo, addSubplan, removePlanTest, removePlanAlgo, removeSubplan
+  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan
 };
 
   //DONE

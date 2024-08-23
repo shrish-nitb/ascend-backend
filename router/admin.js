@@ -136,4 +136,21 @@ router.put("/plan/:planId", async (req, res) => {
     }
 })
 
+router.put("/question/:questionId", async (req, res) => {
+    try {
+        const questionId = req.params.questionId
+        const questionObj = req.body.question
+        const isUpdated = await updateQuestion(questionId, questionObj)
+        if(isUpdated){
+            res.status(200).json({message: "Question/Answer updated successfully"});
+        } else {
+            throw new Error("Some unknown error occured");     
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+
+
 module.exports = router;
