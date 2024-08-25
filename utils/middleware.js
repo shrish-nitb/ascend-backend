@@ -80,13 +80,14 @@ function authorizationProvider(service) {
                 }
             } else if (service == 'PRACTICE') {
                 let purchased = false;
+                const { algo } = req.body;
                 const plans = req.user.plans;
                 for (let i = 0; i < plans.length; i++) {
                     const planObj = plans[i];
                     let currentTime = (new Date()).getTime();
                     let expiryDate = (new Date(planObj.expiryDate)).getTime();
                     let isExpired = currentTime > expiryDate;
-                    if (planObj.plan.practice && !isExpired) {
+                    if (planObj.plan.algo.includes(algo) && !isExpired) {
                         purchased = true;
                         break;
                     }
