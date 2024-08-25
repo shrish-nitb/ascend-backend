@@ -1,7 +1,6 @@
 const express = require("express");
-const { replaceOne } = require("../model/report");
 const router = express.Router();
-const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue } = require("../utils/database");
+const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, removeTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue } = require("../utils/database");
 
 router.get("/users", async (req, res) => {
     try {
@@ -67,6 +66,20 @@ router.post("/mock", async (req, res) => {
         const testId = await createTest(planId, testObj)
         if(testId){
             res.status(200).json({ testId: testId, message: "Test created Successfully"});
+        } else {
+            res.status(500).json({ message: "Some unknown error occured" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.delete("/test/:testId", async (req, res) => {
+    try {
+        const {testId} = req.params;
+        const isDeleted = await removeTest(testId)
+        if(isDeleted){
+            res.status(200).json({message: "Test deleted Successfully"});
         } else {
             res.status(500).json({ message: "Some unknown error occured" });
         }

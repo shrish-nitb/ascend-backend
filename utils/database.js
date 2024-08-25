@@ -192,6 +192,16 @@ async function createTest(planID, testObj) {
   return test._id
 }
 
+//Delete a test
+async function removeTest(testID) {
+  await Plan.updateMany({test: testID}, {$pull : {test: testID}})
+  const doc = await Test.findByIdAndDelete(testID);
+  if (!doc) {
+    throw new Error("No Test found");
+  }
+  return true
+}
+
 //CRUD functionality for Plans
 
 //Add Plan
@@ -371,7 +381,7 @@ async function viewQue(queId){
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportAll, userAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
+  reattempt, reportAll, userAll, changeRole, viewTest, createTest, removeTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
 };
 
   //DONE

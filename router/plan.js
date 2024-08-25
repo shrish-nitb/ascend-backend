@@ -5,8 +5,20 @@ const Plan = require('../model/plan');
 //GET : retrieve all plans
 router.get('/', async (req, res) => {
   try {
-    //use listPlans db utils here
-    const plans = await Plan.find().populate('test', '-sections.questions -sections._id');
+    const plans = await Plan.find({}, "-__v").populate([
+      {
+        path: "test",
+        select: "-sections.questions -sections._id -__v"
+      },
+      {
+        path: "algo",
+        select: "-__v",
+        populate: {
+          path: "topics",
+          select: "-__v"
+        }
+      }
+    ])
     res.status(200).json(plans);
   } catch (error) {
     console.error(error);
