@@ -105,7 +105,7 @@ async function cancelOrder(transactionID, transactionData) {
 
 //All dashboard calls starts
 //fetching all users
-async function usersAll() {
+async function userAll() {
   const users = await User.find({}, 'uid name email phone role').exec();
   return users
 }
@@ -121,7 +121,7 @@ async function changeRole(uid, role) {
   return { name: doc.name, role: doc.role }
 }
 //fetching user reports along with data
-async function reportsAll(userID) {
+async function reportAll(userID) {
   const user = await User.findOne({ uid: userID }, '-_id -bio -__v -plans._id').populate("plans.plan", "name").exec();
   if (!user) {
     throw new Error("User not found")
@@ -368,13 +368,13 @@ async function viewQue(queId){
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
+  reattempt, reportAll, userAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
 };
 
   //DONE
   //reattempt - grant a test access again to any user
-  //reportsAll - get list of all reports of any user
-  //usersAll - get list of all users with their data
+  //reportAll - get list of all reports of any user
+  //userAll - get list of all users with their data
   //viewTest - get test corresponding to given testID
   //createTest - create a new test using testObj
   //createAlgo - create a new algo using algoObj
