@@ -69,15 +69,6 @@ function authorizationProvider(service) {
                 if (!purchased) {
                     throw new Error("Out of Plan");
                 }
-            } else if (service == 'REPORT') {
-                const reportID = req.params.report || req.body.report;
-                if (!reportID) {
-                    //throw error
-                }
-                const owner = await Report.findOne({ _id: reportID })
-                if (req.decodedToken.uid != owner.user) {
-                    throw new Error("Insufficient rights");
-                }
             } else if (service == 'PRACTICE') {
                 let purchased = false;
                 const { algo } = req.body;
@@ -95,7 +86,16 @@ function authorizationProvider(service) {
                 if (!purchased) {
                     throw new Error("Out of Plan");
                 }
-            }
+            } else if (service == 'REPORT') {
+                const reportID = req.params.report || req.body.report;
+                if (!reportID) {
+                    //throw error
+                }
+                const owner = await Report.findOne({ _id: reportID })
+                if (req.decodedToken.uid != owner.user) {
+                    throw new Error("Insufficient rights");
+                }
+            } 
 
             next();
         } catch (error) {
