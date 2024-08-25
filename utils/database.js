@@ -229,7 +229,6 @@ async function updatePlan(planId, planObj) {
     }
   }
   for (item of planObj.algo) {
-    console.log(item)
     const algo = await Algo.findById(item)
     if (!algo) {
       throw new Error("No Algo found with that ID, Updation Failed.");
@@ -283,28 +282,10 @@ async function updateQuestion(questionId, questionObj){
 //Add Remove test, algo, subplan
 async function addSubplan(mainPlanId, subPlanId) {
 
-  const subplan = await Plan.findById(subPlanId)
-  if (!subplan) {
-    throw new Error("No subplan found with that ID");
-  }
-  const isExist = (await Plan.findById(planId, "-_id subplans")).subplans.includes(subPlanId);
-  if (isExist) {
-    throw new Error("Entry already exists")
-  }
-  const doc = await Plan.findByIdAndUpdate(planId, { $push: { subplans: subPlanId } })
-  if (!doc) {
-    throw new Error("No Main Plan found with that ID");
-  }
-
 }
 
 //remove test, algo subplan
 async function removeSubplan(mainPlanId, subPlanId) {
-
-  const doc = await Plan.findByIdAndUpdate(planId, { $pull: { subplans: subPlanId } })
-  if (!doc) {
-    throw new Error("No Main Plan found with that ID");
-  }
 
 }
 
@@ -312,112 +293,65 @@ async function removeSubplan(mainPlanId, subPlanId) {
 
 //Inserting a new Alog
 async function createAlgo(algObj) {
-
   await Algo.create(algObj);
-
+  return true
 }
 
 //Deleting existing Algo
 async function removeAlgo(algId) {
-
+  await Plan.updateMany({"algo": algId}, {$pull : {"algo": algId}})
   const doc = await Algo.findByIdAndDelete(algId);
   if (!doc) {
     throw new Error("No document found with that ID");
   }
-
+  return true
 }
 
-//Update existing Algo Name
-async function updateAlgoName(algId, newName) {
-
-  const doc = await Algo.findByIdAndUpdate(algId, { name: newName })
+//Update existing Algo
+async function updateAlgo(algId, algObj) {
+  const doc = await Algo.findByIdAndUpdate(algId, algObj)
   if (!doc) {
     throw new Error("No document found with that ID");
   }
-
-}
-
-//Add existing Topic to Algo 
-async function addAlgoTopic(algId, tpcId) {
-
-  const tpc = await Topic.findById(tpcId)
-  if (!tpc) {
-    throw new Error("No topic found with that ID");
-  }
-  const isExist = (await Algo.findById(algId, "-_id topics")).topics.includes(tpcId);
-  if (isExist) {
-    throw new Error("Entry already exists")
-  }
-  const doc = await Algo.findByIdAndUpdate(algId, { $push: { topics: tpcId } })
-  if (!doc) {
-    throw new Error("No Algo found with that ID");
-  }
-
-}
-
-//Remove existing Topic from Algo
-async function removeAlgoTopic(algId, tpcId) {
-
-  const doc = await Algo.findByIdAndUpdate(algId, { $pull: { topics: tpcId } })
-  if (!doc) {
-    throw new Error("No Algo found with that ID");
-  }
-
+  return true
 }
 
 //CRUD functionality for Topics
 
 //Inserting a new Topic
-async function createTopic(tpcObj) {
-
-  await Topic.create(tpcObj);
-
+async function createTopic(algId, tpcObj) {
+  const topic = await Topic.create(tpcObj);
+  const doc = await Algo.findByIdAndUpdate(algId, {$push: {topics: topic._id}})
+  if(!doc){
+    throw new Error("No algo found with the ID")
+  }
+  return true
 }
 
 //Deleting existing Topic
-async function removeTopic(tpcId) {
-
+async function removeTopic(algId, tpcId) {
+  await Algo.updateOne({"_id": algId}, {$pull : {topics : tpcId}})
   const doc = await Topic.findByIdAndDelete(tpcId);
   if (!doc) {
     throw new Error("No document found with that ID");
   }
-
+  return true
 }
 
 //Update existing Topic Name
-async function updateTopicName(tpcId, newName) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { name: newName })
+async function updateTopic(tpcId, tpcObj) {
+  const doc = await Topic.findByIdAndUpdate(tpcId, tpcObj)
   if (!doc) {
     throw new Error("No document found with that ID");
   }
-
+  return true
 }
 
-//Add Subtopic to Topic
-async function addSubtopics(tpcId, list) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { $push: { subtopic: list } })
-  if (!doc) {
-    throw new Error("Not found with that ID");
-  }
-
-}
-
-//Remove Subtopic from Topic
-async function removeSubtopic(tpcId, subtopic) {
-
-  const doc = await Topic.findByIdAndUpdate(tpcId, { $pull: { subtopic: subtopic } })
-  if (!doc) {
-    throw new Error("Not found with that ID");
-  }
-
-}
 
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgoName, addAlgoTopic, removeAlgoTopic, createTopic, removeTopic, updateTopicName, addSubtopics, removeSubtopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan
+  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan
 };
 
   //DONE
@@ -445,8 +379,8 @@ module.exports = {
   //removePlanTest - remove a test(testID) from part of Plan(planId)
   //removePlanAlgo - remove an algo(algoID) from part of Plan(planId)
   //removeSubplan - remove a plan(planId) from part of Plan(planId)
-
-  //PENDING
   //updateQuestion - update the question's directions, statement, media, options, solution (answer?)
   //updateRole - swtich role between admin and user of given userID
+
+  //PENDING
   //mock status modification endpoint (?)

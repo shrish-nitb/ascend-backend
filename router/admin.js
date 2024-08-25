@@ -1,7 +1,7 @@
 const express = require("express");
 const { replaceOne } = require("../model/report");
 const router = express.Router();
-const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan } = require("../utils/database");
+const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo } = require("../utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
 
@@ -150,6 +150,94 @@ router.put("/question/:questionId", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 })
+
+router.post("/algo", async (req, res) => {
+    try {
+       const {algo} = req.body;
+       const isCreated = await createAlgo(algo)
+       if(isCreated){
+          res.status(200).json({message: "Algo creation successful"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.delete("/algo/:algId", async (req, res) => {
+    try {
+       const {algId} = req.params
+       const isDeleted = await removeAlgo(algId)
+       if(isDeleted){
+          res.status(200).json({message: "Algo deleted successfully"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.post("/algo/:algId/topic", async (req, res) => {
+    try {
+       const {topic} = req.body;
+       const {algId} = req.params;
+       const isCreated = await createTopic(algId, topic)
+       if(isCreated){
+          res.status(200).json({message: "Topic creation successful"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.delete("/algo/:algId/topic/:tpcId", async (req, res) => {
+    try {
+       const {algId, tpcId} = req.params
+       const isDeleted = await removeTopic(algId, tpcId)
+       if(isDeleted){
+          res.status(200).json({message: "Topic deleted successfully"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.put("/topic/:tpcId", async (req, res) => {
+    try {
+       const {tpcId} = req.params
+       const {topic} = req.body
+       const isUpdated = await updateTopic(tpcId, topic)
+       if(isUpdated){
+          res.status(200).json({message: "Topic updated successfully"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
+router.put("/algo/:algId", async (req, res) => {
+    try {
+       const {algId} = req.params
+       const {algo} = req.body
+       const isUpdated = await updateAlgo(algId, algo)
+       if(isUpdated){
+          res.status(200).json({message: "Algo updated successfully"});
+       } else {
+          throw new Error("Some unknown error occured");     
+       }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
 
 
 
