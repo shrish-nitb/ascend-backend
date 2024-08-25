@@ -347,11 +347,28 @@ async function updateTopic(tpcId, tpcObj) {
   return true
 }
 
+async function algoAll(){
+  const algoList = await Algo.find({}, "-__v").populate("topics", "-__v")
+  return algoList
+}
 
+async function testAll(){
+  const testList = await Test.find({}, "-sections -__v")
+  return testList
+}
+
+async function viewQue(queId){
+  const queObj = await Question.findById(queId, "-__v")
+  const ansObj = await Answer.findById(queId, "-__v")
+  if(!queObj || !ansObj){
+    throw new Error("Question/Answer not found")
+  }
+  return {...(queObj._doc), ...(ansObj._doc)}
+} 
 
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan
+  reattempt, reportsAll, usersAll, changeRole, viewTest, createTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
 };
 
   //DONE

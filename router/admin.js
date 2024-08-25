@@ -1,7 +1,7 @@
 const express = require("express");
 const { replaceOne } = require("../model/report");
 const router = express.Router();
-const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo } = require("../utils/database");
+const { usersAll, reportsAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue } = require("../utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
 
@@ -238,7 +238,32 @@ router.put("/algo/:algId", async (req, res) => {
     }
 })
 
+router.get("/algos", async (req, res) => {
+    try {
+        const list  = await algoAll()
+        res.status(200).json({algos: list});
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
+router.get("/tests", async (req, res) => {
+    try {
+        const list  = await testAll()
+        res.status(200).json({tests: list});
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
+router.get("/question/:queId", async (req, res) => {
+    try {
+        const {queId} = req.params
+        const que  = await viewQue(queId)
+        res.status(200).json({question: que})
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 module.exports = router;
