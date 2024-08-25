@@ -96,7 +96,6 @@ function authorizationProvider(service) {
                     throw new Error("Insufficient rights");
                 }
             } 
-
             next();
         } catch (error) {
             res.status(401).json({ message: `Unauthorized, ${error}` });

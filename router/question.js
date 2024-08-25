@@ -83,7 +83,8 @@ router.post("/add", async (req, res) => {
 
 async function addQuestion(questionObj) {
   try {
-    const { answer, solution, ...q } = questionObj;
+    let { answer, solution, ...q } = questionObj;
+    q.meta.topic = q.meta?.topic?.trim().toLowerCase()
     const question = await Question.create(q);
     switch (question.type) {
       case "SINGLE": {

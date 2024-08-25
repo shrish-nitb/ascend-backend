@@ -244,6 +244,7 @@ async function updatePlan(planId, planObj) {
 async function updateQuestion(questionId, questionObj){
   try {
     const {answer, solution, ...q} = questionObj
+    q.meta.topic = q.meta?.topic?.trim().toLowerCase()
     //question obj is same as what we store in DB
     //it must have the type information
     const questionUpdate = await Question.updateOne({_id: questionId}, q)
@@ -320,6 +321,7 @@ async function updateAlgo(algId, algObj) {
 
 //Inserting a new Topic
 async function createTopic(algId, tpcObj) {
+  tpcObj.name = tpcObj.name?.trim().toLowerCase()
   const topic = await Topic.create(tpcObj);
   const doc = await Algo.findByIdAndUpdate(algId, {$push: {topics: topic._id}})
   if(!doc){
@@ -340,6 +342,7 @@ async function removeTopic(algId, tpcId) {
 
 //Update existing Topic Name
 async function updateTopic(tpcId, tpcObj) {
+  tpcObj.name = tpcObj.name?.trim().toLowerCase()
   const doc = await Topic.findByIdAndUpdate(tpcId, tpcObj)
   if (!doc) {
     throw new Error("No document found with that ID");
