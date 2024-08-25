@@ -206,6 +206,7 @@ async function removeTest(testID) {
 
 //Add Plan
 async function createPlan(planObj) {
+  planObj.price = planObj.price * 100
   const plan = Plan.create(planObj)
   return plan
 }
@@ -232,6 +233,7 @@ async function removePlan(planId) {
 //   media []
 // }
 async function updatePlan(planId, planObj) {
+  planObj.price = planObj.price * 100
   for (item of planObj.test) {
     const test = await Test.findById(item)
     if (!test) {
