@@ -3,8 +3,6 @@ const { replaceOne } = require("../model/report");
 const router = express.Router();
 const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue } = require("../utils/database");
 
-const { firebaseTokenVerifier, userAuthLookup } = require("../utils/middleware")
-
 router.get("/users", async (req, res) => {
     try {
         const userList = await userAll();

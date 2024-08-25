@@ -18,7 +18,7 @@ async function connectDB() {
   console.log("Pinged your deployment. You successfully connected to MongoDB!");
 }
 
-//user related db calls (USED)
+//user related db calls (IN USE)
 async function getUser(uid) {
   return User.findOne({ uid: uid }).populate({
     path: "plans.plan",
@@ -101,7 +101,7 @@ async function cancelOrder(transactionID, transactionData) {
 
 //test and report related db calls
 
-//admin panel calls follows (In use)
+//admin panel calls follows (IN USE)
 
 //All dashboard calls starts
 //fetching all users
