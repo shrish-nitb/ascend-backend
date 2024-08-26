@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Question, Answer } = require("../model/question");
 const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require("../utils/middleware");
+const { algoAll } = require("../utils/database");
+
 
 router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
   try {
@@ -23,6 +25,15 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
     return res.status(500).json({ error: error.message });
   }
 });
+
+router.get("/algos", async (req, res) => {
+  try {
+      const list  = await algoAll()
+      res.status(200).json({algos: list});
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+})
 
 
 router.post("/list", firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
