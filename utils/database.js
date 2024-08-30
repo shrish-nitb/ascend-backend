@@ -470,6 +470,34 @@ const createCategorySection= async (req, res) => {
   }
 }
 
+const editCategorySection= async (req, res) => {
+  try{
+    const { sectionid } = req.params;
+    const { sectionTitle, sectionNumber } = req.body;
+    if (!sectionid || !sectionTitle || !sectionNumber) {
+        return res.status(400).json({
+            success: false,
+            message: "section data and section ID are required.",
+        });
+    }
+    const updateSection= await Section.findByIdAndUpdate(sectionid,{
+      sectionTitle:sectionTitle,
+      sectionNumber:sectionNumber,
+    })
+
+    res.status(202).json({
+        success: true,
+        message: "section data updated successfully",
+    })
+  }catch (error) {
+    console.error("Error updating section data:", error);
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error.",
+    });
+  }
+}
+
 const createCategorySectionTopic=async (req, res) => {
   try {
       const { sectionid } = req.params;
@@ -531,10 +559,54 @@ const createCategorySectionTopic=async (req, res) => {
   }
 }
 
+const editCategorySectionTopic = async (req, res) => {
+  try{
+      const {topicid}= req.params;
+      const {topic} = req.body;
+      if (!topicid || !topic) {
+        return res.status(400).json({
+            success: false,
+            message: "topic data and topic ID are required.",
+        });
+    }
+    const resourceData={type:topic?.resource?.type,link:topic?.resource?.link,questions:topic?.resource?.questions}
+      if(resourceData.type ==="quiz")
+      {
+          resourceData.link ="";
+      }
+      else{
+          resourceData.questions=[];
+      }
+      // console.log(topic?.resource?._id)
+      const updateResourceData= await Resource.findByIdAndUpdate(topic?.resource?._id,{
+        type:resourceData.type,
+          link:resourceData.link,
+          questions:resourceData.questions,
+      })
+      // console.log(updateResourceData)
+      // console.log(topicid)
+    const updateTopic= await CourseTopic.findByIdAndUpdate(topicid,{
+        title:topic?.title,
+        duration:topic?.duration,
+    })
+// console.log(updateTopic)
+    res.status(202).json({
+        success: true,
+        message: "topic data updated successfully",
+    })
+  }catch (error) {
+    console.error("Error updating topic data:", error);
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error.",
+    });
+  }
+}
+
 module.exports = {
   connectDB, getUser, addPhone, signup,
   reattempt, reportAll, userAll, changeRole, viewTest, createTest, removeTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue,
-  createCategory,createCategorySection,createCategorySectionTopic
+  createCategory,createCategorySection,createCategorySectionTopic,editCategorySection,editCategorySectionTopic
 };
 
   //DONE

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, removeTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue, createCategory, createCategorySection, createCategorySectionTopic } = require("../utils/database");
+const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, removeTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue, createCategory, createCategorySection, createCategorySectionTopic, editCategorySection, editCategorySectionTopic } = require("../utils/database");
 const Plan = require("../model/plan");
 const { Category, Section, CourseTopic, Resource } = require("../model/course");
 
@@ -265,7 +265,9 @@ router.get("/question/:queId", async (req, res) => {
 
 router.post('/course/:planid', createCategory);
 
-router.post('/course/category/:categoryid',createCategorySection )
+router.post('/course/category/section/:categoryid',createCategorySection )
 
-router.post('/course/category/section/:sectionid', createCategorySectionTopic)
+router.post('/course/category/section/topic/:sectionid', createCategorySectionTopic)
+router.put('/course/category/section/:sectionid', editCategorySection)
+router.put('/course/category/section/topic/:topicid', editCategorySectionTopic)
 module.exports = router;
