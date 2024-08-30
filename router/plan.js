@@ -17,8 +17,25 @@ router.get('/', async (req, res) => {
           path: "topics",
           select: "-__v"
         }
-      }
-    ])
+      },
+      {
+        path: "course", // Populate the `course` field which references `Category`
+        select: "-__v",
+        populate: {
+          path: "sections", // Populating nested fields if necessary
+          select: "-__v",
+          populate: {
+            path: "topics",
+            select: "-__v",
+            populate: {
+              path: "resource",
+              select: "-__v"
+            }
+          }
+        }
+      },
+    ]);
+
     res.status(200).json(plans);
   } catch (error) {
     console.error(error);

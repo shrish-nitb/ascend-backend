@@ -13,6 +13,7 @@ const plansRouter = require("./router/plan");
 const testRouter = require("./router/test");
 const reportRouter = require("./router/report");
 const questionRouter = require("./router/question");
+const courseRouter = require("./router/course");
 const { connectDB } = require("./utils/database");
 
 const { firebaseTokenVerifier, userAuthLookup, roleAuthProvider } = require("./utils/middleware")
@@ -30,6 +31,8 @@ async function main() {
   app.use("/test", testRouter);
   app.use("/report", reportRouter);
   app.use("/question", questionRouter)
+  app.use("/course", courseRouter)
+
 
   try {
     await connectDB();

@@ -9,14 +9,14 @@
 //      media, array of string, default []
 
 const mongoose = require("mongoose");
-
+const { Category } = require('./course');
 const planSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   description: {
-    type: String,
+    type: String, 
     required: true,
   },
   features: {
@@ -49,6 +49,11 @@ const planSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  course:{
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Category",
+    default: [],
+  }
 });
 
 const Plan = mongoose.model("Plan", planSchema);

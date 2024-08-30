@@ -7,6 +7,7 @@ const { Algo, Topic } = require("../model/algorithm");
 const Order = require("../model/order");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
+const { Resource, CourseTopic, Category, Section } = require("../model/course");
 
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
@@ -381,9 +382,159 @@ async function viewQue(queId){
   return {...(queObj._doc), ...(ansObj._doc)}
 } 
 
+const createCategory = async (req, res) => {
+    try {
+        const { category } = req.body; // category data from the request body
+        const { planid } = req.params; // plan ID from the request parameters
+
+        if (!category || !planid) {
+            return res.status(400).json({
+                success: false,
+                message: "Category data and plan ID are required.",
+            });
+        }
+
+        // Find the Plan by ID
+        const plan = await Plan.findById(planid);
+        if (!plan) {
+            return res.status(404).json({
+                success: false,
+                message: "Plan not found.",
+            });
+        }
+
+        // Create and save the new Category
+        const newCategory = await Category.create({
+
+            category
+
+        });
+        // Add the new category to the plan's `course` array
+        plan.course.push(newCategory._id);
+        await plan.save();
+
+        // Respond with success
+        res.status(201).json({
+            success: true,
+            data: newCategory,
+            message: "Category added to plan successfully.",
+        });
+    } catch (error) {
+        console.error("Error adding category to plan:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error.",
+        });
+    }
+}
+
+const createCategorySection= async (req, res) => {
+  try {
+      const { categoryid } = req.params;
+      const { sectionTitle, sectionNumber } = req.body;
+      if (!categoryid || !sectionTitle || !sectionNumber) {
+          return res.status(400).json({
+              success: false,
+              message: "section data and category ID are required.",
+          });
+      }
+      const category = await Category.findById(categoryid);
+      if (!category) {
+          return res.status(404).json({
+              success: false,
+              message: "Category not found.",
+          });
+      }
+
+      const newSection = await Section.create(
+         { 
+          sectionTitle:sectionTitle,
+          sectionNumber:sectionNumber,
+         }
+      )
+      category.sections.push(newSection._id);
+      await category.save();
+      res.status(201).json({
+          success: true,
+          data: newSection,
+          message: "Section added to Category successfully.",
+      });
+
+  }
+  catch (error) {
+      console.error("Error adding category to plan:", error);
+      res.status(500).json({
+          success: false,
+          message: "Internal Server Error.",
+      });
+  }
+}
+
+const createCategorySectionTopic=async (req, res) => {
+  try {
+      const { sectionid } = req.params;
+      const { topic } = req.body;
+      if (!sectionid || !topic) {
+          return res.status(400).json({
+              success: false,
+              message: "topic data and section ID are required.",
+          });
+      }
+      // console.log(req.body);
+      const section = await Section.findById(sectionid);
+      if (!section) {
+          return res.status(404).json({
+              success: false,
+              message: "Section not found.",
+          });
+      }
+      // console.log(section);
+      const resourceData={type:topic?.resource?.type,link:topic?.resource?.link,questions:topic?.resource?.questions}
+      if(resourceData.type ==="quiz")
+      {
+          resourceData.link ="";
+      }
+      else{
+          resourceData.questions=[];
+      }
+      // console.log(resourceData);
+      const newResource= await Resource.create({
+          type:resourceData.type,
+          link:resourceData.link,
+          questions:resourceData.questions,
+      })
+      // console.log(newResource)
+      const newTopic= await CourseTopic.create({
+          title:topic?.title,
+          duration:topic?.duration,
+          resource:newResource._id,
+      })
+
+  
+      section.topics.push(newTopic._id);
+      await section.save();
+
+      res.status(201).json({
+          success: true,
+          topic: newTopic,
+          resource: newResource,
+          message: "Topic added to Section successfully.",
+      });
+
+  }
+  catch (error) {
+      console.error("Error adding Topic to section:", error);
+      res.status(500).json({
+          success: false,
+          message: "Internal Server Error.",
+      });
+  }
+}
+
 module.exports = {
   connectDB, getUser, addPhone, signup,
-  reattempt, reportAll, userAll, changeRole, viewTest, createTest, removeTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue
+  reattempt, reportAll, userAll, changeRole, viewTest, createTest, removeTest, updateQuestion, createAlgo, removeAlgo, updateAlgo, createTopic, removeTopic, updateTopic, createPlan, removePlan, updatePlan, addSubplan, removeSubplan, algoAll, testAll, viewQue,
+  createCategory,createCategorySection,createCategorySectionTopic
 };
 
   //DONE
