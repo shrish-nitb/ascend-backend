@@ -48,6 +48,7 @@ function roleAuthProvider(role) {
 
 function authorizationProvider(service) {
     return async function (req, res, next) {
+        console.log(service)
         try {
             if (service == 'TEST') {
                 let purchased = false;
@@ -69,6 +70,32 @@ function authorizationProvider(service) {
                 if (!purchased) {
                     throw new Error("Out of Plan");
                 }
+            }
+                else if (service =='COURSE') {
+                    let purchased = false;
+                    const { planid } = req.params;
+                    console.log(planid);
+                    if (!planid) {
+                        //throw error
+                    }
+                    const plans = req.user.plans;
+                    for (let i = 0; i < plans.length; i++) {
+                        const planObj = plans[i];
+                        let currentTime = (new Date()).getTime();
+                        let expiryDate = (new Date(planObj.expiryDate)).getTime();
+                        console.log(expiryDate);
+                        let isExpired = currentTime > expiryDate;
+                        // console.log(planObj);
+                        // console.log(planObj?.plan?._id.toString());
+                        if (planObj?.plan?._id.toString()===planid && !isExpired) {
+                            purchased = true;
+                            break;
+                        }
+                    }
+                    if (!purchased) {
+                        throw new Error("Out of Plan");
+                    }
+                
             } else if (service == 'PRACTICE') {
                 let purchased = false;
                 const { algo } = req.body;
