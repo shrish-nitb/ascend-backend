@@ -32,7 +32,7 @@ router.get("/:plan", firebaseTokenVerifier, userAuthLookup, async (req, res) => 
         merchantTransactionId: orderObj._id,
         merchantUserId: userId,
         amount: planObj[0].price,
-        redirectUrl: "https://learn.projectascend.in/dashboard/my-profile",
+        redirectUrl: "https://learn.projectascend.in/",
         redirectMode: "REDIRECT",
         callbackUrl: "https://project-ascend-backend.vercel.app/orders/callback",
         paymentInstrument: {
