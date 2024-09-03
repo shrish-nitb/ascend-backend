@@ -8,7 +8,10 @@ const Order = require("../model/order");
 const Report = require("../model/report");
 const { Question, Answer } = require("../model/question");
 const { Resource, CourseTopic, Category, Section } = require("../model/course");
-
+const fs = require('fs');
+const XLSX = require('xlsx');
+const path = require('path');
+const { default: axios } = require("axios");
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
 };
@@ -840,6 +843,112 @@ const deleteTopic = async (req, res) => {
   }
 };
 
+
+
+// for adding bulk questions all together using excel sheet
+const addBulkQuestions = async (req, res) => {
+    // console.log('Request received:', req);
+
+    if (!req.files) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const tempFilePath = req.files.file.tempFilePath;
+
+    try {
+        // Read the uploaded Excel file
+        const workbook = XLSX.readFile(tempFilePath);
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // Convert sheet to JSON
+        const data = XLSX.utils.sheet_to_json(sheet);
+        // console.log('Excel data:', data);
+
+        // Collect results and IDs
+        const results = [];
+        const questionIds = []; // Array to store question IDs
+       
+
+        for (const [index, row] of data.entries()) {
+            const payload = {
+                statement: row.statement || '',
+                type: row.type || '',
+                directions: row.directions || '',
+                media: row.media || '',
+                options: [
+                    { value: row.option1 || '' },
+                    { value: row.option2 || '' },
+                    { value: row.option3 || '' },
+                    { value: row.option4 || '' }
+                ],
+                answer: row.answer || '',
+                meta: {
+                    tag: row.tag || '',
+                    topic: row.topic || '',
+                    subtopic: row.subtopic || ''
+                },
+                testOnly: row.testOnly || false,
+                solution: row.solution || ''
+            };
+            // console.log('Payload:', payload);
+
+            try {
+                const response = await axios.post(
+                    "https://backend.projectascend.in/question/add",
+                    payload
+                );
+                // console.log('API Response:', response.data);
+                results.push({
+                    status: response.status,
+                    data: response.data
+                });
+
+                // Store question ID and its index
+                questionIds.push({ index, id: response.data._id });
+            } catch (apiError) {
+                console.error('API Request Error:', {
+                    message: apiError.message,
+                    status: apiError.response ? apiError.response.status : 'No status code',
+                    data: apiError.response ? apiError.response.data : 'No response data'
+                });
+                results.push({
+                    status: apiError.response ? apiError.response.status : 500,
+                    error: apiError.response ? apiError.response.data : apiError.message
+                });
+            }
+        }
+
+        // Update Excel file with question IDs
+        const updatedData = data.map((row, i) => ({
+            ...row,
+            'Question ID': questionIds.find(q => q.index === i)?.id || ''
+        }));
+        const updatedSheet = XLSX.utils.json_to_sheet(updatedData);
+        workbook.Sheets[workbook.SheetNames[0]] = updatedSheet;
+
+        // Create a buffer from the updated workbook
+        const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+        // Set response headers for file download
+        res.setHeader("Content-Disposition", "attachment; filename=updated.xlsx");
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        // Send the buffer as a response
+        res.send(buffer);
+
+        // Clean up the uploaded file
+        fs.unlinkSync(tempFilePath);
+
+
+    } catch (error) {
+        console.error('File Processing Error:', error);
+        res.status(500).json({ error: 'An error occurred while processing the file' });
+    }
+};
+
+
+
 module.exports = {
   connectDB,
   getUser,
@@ -876,6 +985,7 @@ module.exports = {
   deleteSection,
   deleteTopic,
   editCategory,
+  addBulkQuestions,
 };
 
 //DONE

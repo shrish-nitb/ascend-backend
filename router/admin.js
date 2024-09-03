@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, removeTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue, createCategory, createCategorySection, createCategorySectionTopic, editCategorySection, editCategorySectionTopic, DeleteCategory, deleteCategory, deleteSection, deleteTopic, updateCategory, editCategory } = require("../utils/database");
+const { userAll, reportAll, changeRole, reattempt, viewTest, createTest, removeTest, updateQuestion, createPlan, removePlan, updatePlan, createAlgo, removeAlgo, createTopic, removeTopic, updateTopic, updateAlgo, algoAll, testAll, viewQue, createCategory, createCategorySection, createCategorySectionTopic, editCategorySection, editCategorySectionTopic, DeleteCategory, deleteCategory, deleteSection, deleteTopic, updateCategory, editCategory, addBulkQuestions } = require("../utils/database");
 const Plan = require("../model/plan");
 const { Category, Section, CourseTopic, Resource } = require("../model/course");
 
@@ -274,4 +274,6 @@ router.put('/course/category/section/topic/:topicid', editCategorySectionTopic)
 router.delete("/course/:planid/category/:categoryid", deleteCategory)
 router.delete("/course/category/:categoryid/section/:sectionid", deleteSection)
 router.delete("/course/category/section/:sectionid/topic/:topicid", deleteTopic)
+
+router.post("/questions/upload",addBulkQuestions);
 module.exports = router;  
