@@ -6,7 +6,7 @@ const { firebaseTokenVerifier, userAuthLookup, authorizationProvider } = require
 const { algoAll } = require("../utils/database");
 
 
-router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, authorizationProvider('PRACTICE'), async (req, res) => {
+router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLookup, async (req, res) => {
   try {
     const { questionId, markedValue } = req.params;
     const testOnly = (await Question.findOne({_id: questionId.trim()}, "testOnly -_id").exec())?.testOnly || false; //undefined (evaluates to if not found testOnly key instead of exception) || false
@@ -18,8 +18,9 @@ router.get('/solve/:questionId/:markedValue', firebaseTokenVerifier, userAuthLoo
       throw new Error("Answer not exist")
     }
     const answer = answerDoc.answer;
+    const solution = answerDoc.solution
     const correct = (answer.toString().trim() == markedValue.toString().trim());
-    return res.json({ correct, answer});
+    return res.json({ correct, answer,solution});
   } catch (error) {
     console.error('Error:', error.message);
     return res.status(500).json({ error: error.message });
