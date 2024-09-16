@@ -877,12 +877,12 @@ const addBulkQuestions = async (req, res) => {
                 directions: row.directions || '',
                 media: row.media || '',
                 options: [
-                    { value: row.option1 || '' },
-                    { value: row.option2 || '' },
-                    { value: row.option3 || '' },
-                    { value: row.option4 || '' }
+                    { value: row.option1 },
+                    { value: row.option2 },
+                    { value: row.option3 },
+                    { value: row.option4 }
                 ],
-                answer: row.answer || '',
+                answer: row.answer ,
                 meta: {
                     tag: row.tag || '',
                     topic: row.topic || '',
